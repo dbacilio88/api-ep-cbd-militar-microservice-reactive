@@ -1,0 +1,36 @@
+@startuml
+enum pe.mil.microservices.components.enums.MilitarValidationResult {
++  MILITAR_VALID
++  INVALID_MILITAR_ID
++  INVALID_MILITAR_CIP
++  INVALID_PERSON
++  INVALID_GRADE
++  INVALID_SPECIALTY
+}
+interface pe.mil.microservices.components.validations.IMilitarRegisterValidation {
+~ {static} IMilitarRegisterValidation isMilitarCipValidation()
+~ {static} IMilitarRegisterValidation isMilitarIdValidation()
+~ {static} IMilitarRegisterValidation isMilitarPersonValidation()
+~ {static} IMilitarRegisterValidation isMilitarGradeValidation()
+~ {static} IMilitarRegisterValidation isMilitarSpecialtyValidation()
+~ {static} IMilitarRegisterValidation customValidation(Predicate<RegisterMilitarRequest>)
+~ IMilitarRegisterValidation and(IMilitarRegisterValidation)
+~ IMilitarRegisterValidation or(IMilitarRegisterValidation)
+}
+interface pe.mil.microservices.components.mappers.contracts.IMilitarMapperByMapstruct {
+~ IMilitarMapperByMapstruct MILITAR_MAPPER
+~ boolean isNotEmpty(String)
+~ MilitarEntity mapMilitarEntityByRegisterMilitarRequest(RegisterMilitarRequest)
+}
+class pe.mil.microservices.components.mappers.contracts.IMilitarMapperByMapstruct.CustomerFields {
++ {static} String FIELD_MILITAR_ID
++ {static} String FIELD_MILITAR_CIP
++ {static} String FIELD_MILITAR_PERSON
++ {static} String FIELD_MILITAR_GRADE
++ {static} String FIELD_MILITAR_SPECIALTY
+}
+
+
+java.util.function.Function <|-- pe.mil.microservices.components.validations.IMilitarRegisterValidation
+pe.mil.microservices.components.mappers.contracts.IMilitarMapperByMapstruct +.. pe.mil.microservices.components.mappers.contracts.IMilitarMapperByMapstruct.CustomerFields
+@enduml

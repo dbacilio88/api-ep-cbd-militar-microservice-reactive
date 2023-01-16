@@ -1,0 +1,21 @@
+@startuml
+class pe.mil.microservices.services.implementations.MilitarService {
+- IMilitarRepository militarRepository
+- String militarServiceId
++ Mono<BusinessProcessResponse> getById(Long)
++ Mono<BusinessProcessResponse> getAll()
++ Mono<BusinessProcessResponse> save(Mono<RegisterMilitarRequest>)
++ Boolean delete(Militar)
++ Mono<BusinessProcessResponse> update(Mono<RegisterMilitarRequest>)
+}
+interface pe.mil.microservices.services.contracts.IMilitarServices {
+}
+
+
+pe.mil.microservices.services.contracts.IMilitarServices <|.. pe.mil.microservices.services.implementations.MilitarService
+pe.mil.microservices.services.contracts.IGetDomainEntityById <|-- pe.mil.microservices.services.contracts.IMilitarServices
+pe.mil.microservices.services.contracts.IGetAllDomainEntity <|-- pe.mil.microservices.services.contracts.IMilitarServices
+pe.mil.microservices.services.contracts.ISaveDomainEntity <|-- pe.mil.microservices.services.contracts.IMilitarServices
+pe.mil.microservices.services.contracts.IUpdateDomainEntity <|-- pe.mil.microservices.services.contracts.IMilitarServices
+pe.mil.microservices.services.contracts.IDeleteDomainEntity <|-- pe.mil.microservices.services.contracts.IMilitarServices
+@enduml

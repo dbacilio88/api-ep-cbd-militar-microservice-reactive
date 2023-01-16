@@ -1,0 +1,31 @@
+@startuml
+class pe.mil.microservices.repositories.entities.GradesEntity {
+- Long gradeId
+- String name
+- String description
+}
+class pe.mil.microservices.repositories.entities.PersonEntity {
+- Long personId
+- String name
+- String lastName
+- String dni
+}
+interface pe.mil.microservices.repositories.contracts.IMilitarRepository {
+~ boolean existsByMilitarId(Long)
+}
+class pe.mil.microservices.repositories.entities.MilitarEntity {
+- Long militarId
+- String cip
+- PersonEntity person
+- GradesEntity grade
+- SpecialtyEntity specialty
+}
+class pe.mil.microservices.repositories.entities.SpecialtyEntity {
+- Long specialtyId
+- String name
+- String description
+}
+
+
+org.springframework.data.jpa.repository.JpaRepository <|-- pe.mil.microservices.repositories.contracts.IMilitarRepository
+@enduml

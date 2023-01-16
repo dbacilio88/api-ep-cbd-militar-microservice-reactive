@@ -1,0 +1,185 @@
+@startuml
+class pe.mil.microservices.services.implementations.MilitarService {
+- IMilitarRepository militarRepository
+- String militarServiceId
++ Mono<BusinessProcessResponse> getById(Long)
++ Mono<BusinessProcessResponse> getAll()
++ Mono<BusinessProcessResponse> save(Mono<RegisterMilitarRequest>)
++ Boolean delete(Militar)
++ Mono<BusinessProcessResponse> update(Mono<RegisterMilitarRequest>)
+}
+class pe.mil.microservices.controllers.implementations.MilitarController {
+- IMilitarServices militarServices
+- BusinessResponse businessResponse
+- String militarControllerId
++ Mono<ResponseEntity<Object>> findAll()
++ Mono<ResponseEntity<Object>> getById(Long)
++ Mono<ResponseEntity<Object>> save(Mono<RegisterMilitarRequest>)
++ Mono<ResponseEntity<Object>> update(Mono<RegisterMilitarRequest>)
+}
+class pe.mil.microservices.dto.responses.RegisterMilitarResponse {
+- {static} long serialVersionUID
+- long militarId
+- String cip
+- Person person
+- Grade grade
+- Specialty specialty
+}
+class pe.mil.microservices.repositories.entities.GradesEntity {
+- Long gradeId
+- String name
+- String description
+}
+class pe.mil.microservices.repositories.entities.PersonEntity {
+- Long personId
+- String name
+- String lastName
+- String dni
+}
+interface pe.mil.microservices.controllers.contracts.IMilitarController {
+~ Mono<ResponseEntity<Object>> findAll()
+~ Mono<ResponseEntity<Object>> getById(Long)
+~ Mono<ResponseEntity<Object>> save(Mono<RegisterMilitarRequest>)
+~ Mono<ResponseEntity<Object>> update(Mono<RegisterMilitarRequest>)
+}
+interface pe.mil.microservices.components.validations.IMilitarRegisterValidation {
+~ {static} IMilitarRegisterValidation isMilitarCipValidation()
+~ {static} IMilitarRegisterValidation isMilitarIdValidation()
+~ {static} IMilitarRegisterValidation isMilitarPersonValidation()
+~ {static} IMilitarRegisterValidation isMilitarGradeValidation()
+~ {static} IMilitarRegisterValidation isMilitarSpecialtyValidation()
+~ {static} IMilitarRegisterValidation customValidation(Predicate<RegisterMilitarRequest>)
+~ IMilitarRegisterValidation and(IMilitarRegisterValidation)
+~ IMilitarRegisterValidation or(IMilitarRegisterValidation)
+}
+class pe.mil.microservices.dto.Specialty {
+- {static} long serialVersionUID
+- long specialtyId
+- String name
+- String description
+}
+interface pe.mil.microservices.components.mappers.contracts.IMilitarMapperByMapstruct {
+~ IMilitarMapperByMapstruct MILITAR_MAPPER
+~ boolean isNotEmpty(String)
+~ MilitarEntity mapMilitarEntityByRegisterMilitarRequest(RegisterMilitarRequest)
+}
+class pe.mil.microservices.components.mappers.contracts.IMilitarMapperByMapstruct.CustomerFields {
++ {static} String FIELD_MILITAR_ID
++ {static} String FIELD_MILITAR_CIP
++ {static} String FIELD_MILITAR_PERSON
++ {static} String FIELD_MILITAR_GRADE
++ {static} String FIELD_MILITAR_SPECIALTY
+}
+class pe.mil.microservices.dto.requests.RegisterMilitarRequest {
+- {static} long serialVersionUID
+- Long militarId
+- String cip
+- Person person
+- Grade grade
+- Specialty specialty
+}
+class pe.mil.microservices.repositories.entities.SpecialtyEntity {
+- Long specialtyId
+- String name
+- String description
+}
+class pe.mil.microservices.Application {
++ {static} void main(String[])
+}
+class pe.mil.microservices.dto.Person {
+- {static} long serialVersionUID
+- long personId
+- String name
+- String lastName
+- String dni
+}
+enum pe.mil.microservices.components.enums.MilitarValidationResult {
++  MILITAR_VALID
++  INVALID_MILITAR_ID
++  INVALID_MILITAR_CIP
++  INVALID_PERSON
++  INVALID_GRADE
++  INVALID_SPECIALTY
+}
+class pe.mil.microservices.constants.RepositoryEntitiesConstants {
++ {static} String ENTITY_MILITAR
++ {static} String ENTITY_MILITAR_ID
++ {static} String ENTITY_MILITAR_CIP
++ {static} String ENTITY_PERSON_ID
++ {static} String ENTITY_GRADE_ID
++ {static} String ENTITY_SPECIALTY_ID
++ {static} String ENTITY_GRADE
++ {static} String ENTITY_GRADES_ID
++ {static} String ENTITY_GRADES_NAME
++ {static} String ENTITY_GRADES_DESCRIPTION
++ {static} String ENTITY_PERSON
++ {static} String ENTITY_PERSON_LAST_NAME
++ {static} String ENTITY_PERSON_NAME
++ {static} String ENTITY_PERSON_DOCUMENT_NUMBER
++ {static} String ENTITY_SPECIALTY
++ {static} String ENTITY_SPECIALTY_NAME
++ {static} String ENTITY_SPECIALTY_DESCRIPTION
+}
+interface pe.mil.microservices.services.contracts.IMilitarServices {
+}
+class pe.mil.microservices.dto.Militar {
+- {static} long serialVersionUID
+- long militarId
+- String cip
+- Person person
+- Grade grade
+- Specialty specialty
+}
+interface pe.mil.microservices.repositories.contracts.IMilitarRepository {
+~ boolean existsByMilitarId(Long)
+}
+class pe.mil.microservices.repositories.entities.MilitarEntity {
+- Long militarId
+- String cip
+- PersonEntity person
+- GradesEntity grade
+- SpecialtyEntity specialty
+}
+class pe.mil.microservices.dto.Grade {
+- {static} long serialVersionUID
+- long gradeId
+- String name
+- String description
+}
+class pe.mil.microservices.constants.ProcessConstants {
++ {static} String PROCESS_TYPE_STRING
++ {static} String PARAM_COMPONENT_UUID
++ {static} String PARAMETER_EMPTY_VALUE
++ {static} String PARAMETER_ACTUATOR_PATH_CONTAIN_VALUE
++ {static} String MICROSERVICE_PATH_CONTEXT
++ {static} String MICROSERVICE_MILITAR_PATH
++ {static} String GET_MILITAR_PATH
++ {static} String SAVE_MILITAR_PATH
++ {static} String GET_MILITAR_ID_PATH
++ {static} String FIND_ALL_MILITAR_LOG_METHOD
++ {static} String FIND_BY_ID_MILITAR_LOG_METHOD
++ {static} String SAVE_MILITAR_LOG_METHOD
++ {static} String UPDATE_MILITAR_LOG_METHOD
++ {static} String MAPSTRUCT_COMPONENT_MODEL_CONFIGURATION
+}
+
+
+pe.mil.microservices.services.contracts.IMilitarServices <|.. pe.mil.microservices.services.implementations.MilitarService
+
+pe.mil.microservices.controllers.contracts.IMilitarController <|.. pe.mil.microservices.controllers.implementations.MilitarController
+java.io.Serializable <|.. pe.mil.microservices.dto.responses.RegisterMilitarResponse
+java.util.function.Function <|-- pe.mil.microservices.components.validations.IMilitarRegisterValidation
+java.io.Serializable <|.. pe.mil.microservices.dto.Specialty
+pe.mil.microservices.components.mappers.contracts.IMilitarMapperByMapstruct +.. pe.mil.microservices.components.mappers.contracts.IMilitarMapperByMapstruct.CustomerFields
+java.io.Serializable <|.. pe.mil.microservices.dto.requests.RegisterMilitarRequest
+pe.mil.microservices.utils.base.MicroserviceApplication <|-- pe.mil.microservices.Application
+java.io.Serializable <|.. pe.mil.microservices.dto.Person
+pe.mil.microservices.services.contracts.IGetDomainEntityById <|-- pe.mil.microservices.services.contracts.IMilitarServices
+pe.mil.microservices.services.contracts.IGetAllDomainEntity <|-- pe.mil.microservices.services.contracts.IMilitarServices
+pe.mil.microservices.services.contracts.ISaveDomainEntity <|-- pe.mil.microservices.services.contracts.IMilitarServices
+pe.mil.microservices.services.contracts.IUpdateDomainEntity <|-- pe.mil.microservices.services.contracts.IMilitarServices
+pe.mil.microservices.services.contracts.IDeleteDomainEntity <|-- pe.mil.microservices.services.contracts.IMilitarServices
+java.io.Serializable <|.. pe.mil.microservices.dto.Militar
+org.springframework.data.jpa.repository.JpaRepository <|-- pe.mil.microservices.repositories.contracts.IMilitarRepository
+java.io.Serializable <|.. pe.mil.microservices.dto.Grade
+@enduml

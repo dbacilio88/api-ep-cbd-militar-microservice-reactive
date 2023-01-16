@@ -1,0 +1,20 @@
+@startuml
+class pe.mil.microservices.controllers.implementations.MilitarController {
+- IMilitarServices militarServices
+- BusinessResponse businessResponse
+- String militarControllerId
++ Mono<ResponseEntity<Object>> findAll()
++ Mono<ResponseEntity<Object>> getById(Long)
++ Mono<ResponseEntity<Object>> save(Mono<RegisterMilitarRequest>)
++ Mono<ResponseEntity<Object>> update(Mono<RegisterMilitarRequest>)
+}
+interface pe.mil.microservices.controllers.contracts.IMilitarController {
+~ Mono<ResponseEntity<Object>> findAll()
+~ Mono<ResponseEntity<Object>> getById(Long)
+~ Mono<ResponseEntity<Object>> save(Mono<RegisterMilitarRequest>)
+~ Mono<ResponseEntity<Object>> update(Mono<RegisterMilitarRequest>)
+}
+
+
+pe.mil.microservices.controllers.contracts.IMilitarController <|.. pe.mil.microservices.controllers.implementations.MilitarController
+@enduml

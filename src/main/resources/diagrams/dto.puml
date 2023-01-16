@@ -1,0 +1,53 @@
+@startuml
+class pe.mil.microservices.dto.responses.RegisterMilitarResponse {
+- {static} long serialVersionUID
+- long militarId
+- String cip
+- Person person
+- Grade grade
+- Specialty specialty
+}
+class pe.mil.microservices.dto.Militar {
+- {static} long serialVersionUID
+- long militarId
+- String cip
+- Person person
+- Grade grade
+- Specialty specialty
+}
+class pe.mil.microservices.dto.Grade {
+- {static} long serialVersionUID
+- long gradeId
+- String name
+- String description
+}
+class pe.mil.microservices.dto.Specialty {
+- {static} long serialVersionUID
+- long specialtyId
+- String name
+- String description
+}
+class pe.mil.microservices.dto.requests.RegisterMilitarRequest {
+- {static} long serialVersionUID
+- Long militarId
+- String cip
+- Person person
+- Grade grade
+- Specialty specialty
+}
+class pe.mil.microservices.dto.Person {
+- {static} long serialVersionUID
+- long personId
+- String name
+- String lastName
+- String dni
+}
+
+
+java.io.Serializable <|.. pe.mil.microservices.dto.responses.RegisterMilitarResponse
+java.io.Serializable <|.. pe.mil.microservices.dto.Militar
+java.io.Serializable <|.. pe.mil.microservices.dto.Grade
+java.io.Serializable <|.. pe.mil.microservices.dto.Specialty
+java.io.Serializable <|.. pe.mil.microservices.dto.requests.RegisterMilitarRequest
+java.io.Serializable <|.. pe.mil.microservices.dto.Person
+@enduml
