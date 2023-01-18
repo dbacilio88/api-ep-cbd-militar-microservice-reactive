@@ -2,8 +2,6 @@ package pe.mil.microservices.controllers.implementations;
 
 import lombok.extern.log4j.Log4j2;
 import org.apache.logging.log4j.ThreadContext;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.Scope;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.support.WebExchangeBindException;
 import pe.mil.microservices.controllers.contracts.IMilitarController;
 import pe.mil.microservices.dto.requests.RegisterMilitarRequest;
+import pe.mil.microservices.dto.requests.SearchMilitarRequest;
 import pe.mil.microservices.services.contracts.IMilitarServices;
 import pe.mil.microservices.utils.components.exceptions.CommonBusinessProcessException;
 import pe.mil.microservices.utils.constants.LoggerConstants;
@@ -25,7 +24,6 @@ import static pe.mil.microservices.constants.ProcessConstants.*;
 
 @Log4j2
 @RestController
-@Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class MilitarController implements IMilitarController {
     private final IMilitarServices militarServices;
     private final BusinessResponse businessResponse;
@@ -104,6 +102,36 @@ public class MilitarController implements IMilitarController {
                         .getResponse(e.getResponseCode().getResponseCodeValue())))
             .doOnError(throwable ->
                 log.error("exception error in process getById, error: {}", throwable.getMessage())
+            );
+    }
+
+    @Override
+    @PostMapping(value = SEARCH_MILITAR_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<ResponseEntity<Object>> getByDni(SearchMilitarRequest search) {
+
+        log.debug("method getByDni initialized successfully");
+        log.debug("militarControllerId {}", militarControllerId);
+        ThreadContext.put(LoggerConstants.CONSTANTS_LOG_METHOD, FIND_BY_ID_MILITAR_LOG_METHOD);
+
+        return this.militarServices.getByDni(search.getDni())
+            .flatMap(processResponse -> {
+                if (processResponse.isErrorProcessResponse() || processResponse.isEmptySuccessfullyResponse()) {
+                    return Mono.just(businessResponse
+                        .getResponse(processResponse.getResponseCode().getResponseCodeValue()));
+                }
+                return Mono.just(businessResponse
+                    .getResponse(processResponse.getBusinessResponse(),
+                        processResponse.getResponseCode().getResponseCodeValue()));
+            }).doOnSuccess(success ->
+                log.info("finish process getByDni")
+            )
+            .onErrorResume(WebExchangeBindException.class, Mono::error)
+            .onErrorResume(CommonBusinessProcessException.class, e -> Mono
+                .just(
+                    businessResponse
+                        .getResponse(e.getResponseCode().getResponseCodeValue())))
+            .doOnError(throwable ->
+                log.error("exception error in process getByDni, error: {}", throwable.getMessage())
             );
     }
 

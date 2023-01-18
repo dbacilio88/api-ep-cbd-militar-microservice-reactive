@@ -13,6 +13,7 @@ public class ProcessConstants {
     public static final String MICROSERVICE_MILITAR_PATH = MICROSERVICE_PATH_CONTEXT + "/militares";
     public static final String GET_MILITAR_PATH = "";
     public static final String SAVE_MILITAR_PATH = "";
+    public static final String SEARCH_MILITAR_PATH = "/search";
     public static final String GET_MILITAR_ID_PATH = "/{militarId}";
 
     public static final String FIND_ALL_MILITAR_LOG_METHOD = "find.militares.method";

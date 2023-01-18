@@ -8,6 +8,7 @@ public class RepositoryEntitiesConstants {
     public static final String ENTITY_MILITAR = "MILITAR";
     public static final String ENTITY_MILITAR_ID = "MILITAR_ID";
     public static final String ENTITY_MILITAR_CIP = "CIP";
+    public static final String ENTITY_MILITAR_DNI = "DNI";
     public static final String ENTITY_PERSON_ID = "PERSON_ID";
     public static final String ENTITY_GRADE_ID = "GRADE_ID";
     public static final String ENTITY_SPECIALTY_ID = "SPECIALTY_ID";

@@ -15,6 +15,7 @@ import static pe.mil.microservices.constants.RepositoryEntitiesConstants.*;
 @Table(name = ENTITY_SPECIALTY)
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 public class SpecialtyEntity {
 
     @Id
@@ -30,4 +31,7 @@ public class SpecialtyEntity {
     @NotEmpty
     @Column(name = ENTITY_SPECIALTY_DESCRIPTION)
     private String description;
+/*
+    @OneToOne(mappedBy = "specialty", cascade = CascadeType.ALL, orphanRemoval = true)
+    private MilitarEntity militar;*/
 }

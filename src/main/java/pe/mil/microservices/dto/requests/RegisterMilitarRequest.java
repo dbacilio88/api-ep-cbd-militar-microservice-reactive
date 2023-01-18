@@ -5,12 +5,10 @@ import lombok.*;
 import pe.mil.microservices.dto.Grade;
 import pe.mil.microservices.dto.Person;
 import pe.mil.microservices.dto.Specialty;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,6 +23,7 @@ public class RegisterMilitarRequest implements Serializable {
     private Long militarId;
 
     @NotBlank
+    //@Pattern(regexp = REGEX_CIP_NUMBER, message = REGEX_CIP_NUMBER_MESSAGE)
     @Size(max = 9, min = 9)
     private String cip;
 

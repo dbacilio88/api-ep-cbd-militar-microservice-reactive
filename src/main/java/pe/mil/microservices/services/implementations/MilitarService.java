@@ -2,7 +2,6 @@ package pe.mil.microservices.services.implementations;
 
 import com.google.common.collect.Lists;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pe.mil.microservices.components.enums.MilitarValidationResult;
 import pe.mil.microservices.components.mappers.contracts.IMilitarMapperByMapstruct;
@@ -33,7 +32,6 @@ public class MilitarService implements IMilitarServices {
     private final String militarServiceId;
 
 
-    @Autowired
     public MilitarService(
         final IMilitarRepository militarRepository
     ) {
@@ -54,20 +52,25 @@ public class MilitarService implements IMilitarServices {
         return Mono
             .just(genericMessagesBusinessResponse)
             .flatMap(generic -> {
+
                 final Optional<MilitarEntity> entity = this.militarRepository.findById(id);
+
+                log.info("optional entity find: {} ", entity);
+
                 if (entity.isEmpty()) {
-                    return Mono.error(() -> new CommonBusinessProcessException(ResponseCode.ERROR_IN_REQUESTED_DATA));
+                    return Mono.error(() -> new CommonBusinessProcessException(ResponseCode.SUCCESS_IN_REQUESTED_DATA_NOT_FOUND));
                 } else {
                     return Mono.just(entity.get());
                 }
             })
-            .flatMap(entity -> {
-                final Militar target = ObjectMapperHelper.map(entity, Militar.class);
-                log.info("target {} ", target.toString());
-                GenericBusinessResponse<Militar> data = new GenericBusinessResponse<>(target);
-                return Mono.just(data);
-            })
-            .flatMap(response -> Mono.just(BusinessProcessResponse.setEntitySuccessfullyResponse(response)))
+            .flatMap(entity ->
+                Mono.just(searchMilitar(entity)
+                )
+            )
+            .flatMap(response ->
+                Mono.just(BusinessProcessResponse.setEntitySuccessfullyResponse(response)
+                )
+            )
             .doOnSuccess(success ->
                 log.info("finish process getById, success: {}", success)
             )
@@ -87,11 +90,13 @@ public class MilitarService implements IMilitarServices {
                 generic.setData(ObjectMapperHelper.mapAll(Lists.newArrayList(this.militarRepository.findAll()), Militar.class));
                 return Mono.just(generic);
             })
-            .flatMap(response -> {
-                log.info("response {} ", response.getData().toString());
-                return Mono.just(BusinessProcessResponse
-                    .setEntitySuccessfullyResponse(response));
-            }).flatMap(process -> Mono.just(BusinessProcessResponse.setEntitySuccessfullyResponse(process.getBusinessResponse())))
+            .flatMap(response ->
+                Mono.just(BusinessProcessResponse
+                    .setEntitySuccessfullyResponse(response)))
+            .flatMap(process ->
+                Mono.just(BusinessProcessResponse
+                    .setEntitySuccessfullyResponse(process.getBusinessResponse())
+                ))
             .doOnSuccess(success ->
                 log.info("finish process getById, success: {}", success.toString())
             )
@@ -108,38 +113,26 @@ public class MilitarService implements IMilitarServices {
 
         return entity
             .flatMap(create -> {
-                log.debug("this is in services save demo method");
 
-                final MilitarValidationResult result =
-                    IMilitarRegisterValidation
-                        .isMilitarIdValidation()
-                        .and(IMilitarRegisterValidation.isMilitarCipValidation())
-                        .and(IMilitarRegisterValidation.isMilitarPersonValidation())
-                        .and(IMilitarRegisterValidation.isMilitarGradeValidation())
-                        .and(IMilitarRegisterValidation.isMilitarSpecialtyValidation())
-                        .apply(create);
-                log.info("result {} ", result);
+                final MilitarValidationResult result = validationRequest(create);
+
                 if (!MilitarValidationResult.MILITAR_VALID.equals(result)) {
                     return Mono.error(() -> new CommonBusinessProcessException(ResponseCode.ERROR_IN_REQUESTED_DATA));
                 }
+
                 return Mono.just(create);
             })
             .flatMap(request -> {
 
-                log.info("log in flatMap context request {}", request);
-                final MilitarEntity save =
-                    IMilitarMapperByMapstruct.MILITAR_MAPPER.mapMilitarEntityByRegisterMilitarRequest(request);
-                log.info("save entity {} ", save);
-
-                boolean exists = this.militarRepository.existsByMilitarId(save.getMilitarId());
-                log.info("exists entity {} ", exists);
+                boolean exists = this.militarRepository.existsByMilitarId(request.getMilitarId());
+                log.info("exists militar: {} ", exists);
 
                 if (exists) {
                     return Mono.error(() -> new CommonBusinessProcessException(ResponseCode.ERROR_IN_REQUESTED_DATA_EXISTS));
                 }
 
-                final MilitarEntity saved = this.militarRepository.save(save);
-                log.info("saved entity {} ", saved);
+                final MilitarEntity saved = saveMilitar(request);
+                log.info("saved militar {} ", saved);
 
                 if (Objects.isNull(saved.getMilitarId())) {
                     return Mono.error(() -> new CommonBusinessProcessException(ResponseCode.ERROR_IN_REQUESTED_DATA));
@@ -147,13 +140,10 @@ public class MilitarService implements IMilitarServices {
 
                 return Mono.just(saved);
             })
-            .flatMap(militar -> {
-                log.info("militar entity {} ", militar);
-                final RegisterMilitarResponse response = ObjectMapperHelper
-                    .map(militar, RegisterMilitarResponse.class);
-                return Mono.just(BusinessProcessResponse
-                    .setEntitySuccessfullyResponse(new GenericBusinessResponse<>(response)));
-            })
+            .flatMap(response ->
+                Mono.just(militarResponse(response)
+                )
+            )
             .doOnSuccess(success ->
                 log.info("finish process save, success: {}", success)
             )
@@ -186,39 +176,107 @@ public class MilitarService implements IMilitarServices {
         log.debug("militarServiceId {}", militarServiceId);
 
         return entity.
-            flatMap(update -> {
-                log.debug("this is in services update method");
-                final MilitarValidationResult result = IMilitarRegisterValidation
-                    .isMilitarCipValidation().apply(update);
+            flatMap(request -> {
+
+                final MilitarValidationResult result = validationRequest(request);
+
                 if (!MilitarValidationResult.MILITAR_VALID.equals(result)) {
                     return Mono.error(() -> new CommonBusinessProcessException(ResponseCode.ERROR_IN_REQUESTED_DATA));
                 }
-                return Mono.just(update);
+
+                return Mono.just(request);
             })
             .flatMap(request -> {
-                log.debug("log in flatMap context #2");
-                final MilitarEntity update = IMilitarMapperByMapstruct
-                    .MILITAR_MAPPER
-                    .mapMilitarEntityByRegisterMilitarRequest(request);
 
-                final MilitarEntity updated = this.militarRepository.save(update);
+                final MilitarEntity updated = saveMilitar(request);
 
                 if (Objects.isNull(updated.getMilitarId())) {
                     return Mono.error(() -> new CommonBusinessProcessException(ResponseCode.ERROR_IN_REQUESTED_DATA));
                 }
+
                 return Mono.just(updated);
 
             })
-            .flatMap(customer -> {
-                final RegisterMilitarResponse response = ObjectMapperHelper
-                    .map(customer, RegisterMilitarResponse.class);
-                return Mono.just(BusinessProcessResponse
-                    .setEntitySuccessfullyResponse(new GenericBusinessResponse<>(response)));
-            }).doOnSuccess(success ->
+            .flatMap(response ->
+                Mono.just(militarResponse(response)
+                )
+            )
+            .doOnSuccess(success ->
                 log.info("finish process save, success: {}", success)
             )
             .doOnError(throwable ->
                 log.error("exception error in process save, error: {}", throwable.getMessage())
             );
+    }
+
+    @Override
+    public Mono<BusinessProcessResponse> getByDni(String dni) {
+
+        log.info("this is in services getByDni method");
+        log.debug("militarServiceId {}", militarServiceId);
+
+        GenericBusinessResponse<Militar> genericMessagesBusinessResponse = new GenericBusinessResponse<>();
+
+        return Mono
+            .just(genericMessagesBusinessResponse)
+            .flatMap(generic -> {
+                final Optional<MilitarEntity> entity = this.militarRepository.findByDni(dni);
+                log.info("entity method {}", entity);
+                if (entity.isEmpty()) {
+                    return Mono.error(() -> new CommonBusinessProcessException(ResponseCode.SUCCESS_IN_REQUESTED_DATA_NOT_FOUND));
+                } else {
+                    return Mono.just(entity.get());
+                }
+            })
+            .flatMap(entity -> Mono.just(searchMilitar(entity)))
+            .flatMap(response ->
+                Mono.just(BusinessProcessResponse.setEntitySuccessfullyResponse(response)
+                )
+            )
+            .doOnSuccess(success ->
+                log.info("finish process getByDni, success: {}", success)
+            )
+            .doOnError(throwable ->
+                log.error("exception error in process getByDni, error: {}", throwable.getMessage())
+            );
+    }
+
+
+    private GenericBusinessResponse<Militar> searchMilitar(MilitarEntity entity) {
+        final Militar target = ObjectMapperHelper.map(entity, Militar.class);
+        log.info("target {} ", target.toString());
+        GenericBusinessResponse<Militar> data = new GenericBusinessResponse<>(target);
+        return data;
+    }
+
+    private MilitarEntity saveMilitar(RegisterMilitarRequest request) {
+        log.info("operation save or update militar");
+        final MilitarEntity update = IMilitarMapperByMapstruct
+            .MILITAR_MAPPER
+            .mapMilitarEntityByRegisterMilitarRequest(request);
+        //update.setDni(update.getPerson().getDni());
+        final MilitarEntity updated = this.militarRepository.save(update);
+        return updated;
+    }
+
+    private MilitarValidationResult validationRequest(RegisterMilitarRequest request) {
+        final MilitarValidationResult result =
+            IMilitarRegisterValidation
+                .isMilitarIdValidation()
+                .and(IMilitarRegisterValidation.isMilitarCipValidation())
+                .and(IMilitarRegisterValidation.isMilitarPersonValidation())
+                .and(IMilitarRegisterValidation.isMilitarGradeValidation())
+                .and(IMilitarRegisterValidation.isMilitarSpecialtyValidation())
+                .apply(request);
+
+        return result;
+    }
+
+    private BusinessProcessResponse militarResponse(MilitarEntity entity) {
+        final RegisterMilitarResponse response = ObjectMapperHelper
+            .map(entity, RegisterMilitarResponse.class);
+
+        return BusinessProcessResponse
+            .setEntitySuccessfullyResponse(new GenericBusinessResponse<>(response));
     }
 }
