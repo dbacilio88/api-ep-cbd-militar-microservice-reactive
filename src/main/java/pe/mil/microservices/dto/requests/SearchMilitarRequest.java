@@ -2,7 +2,7 @@ package pe.mil.microservices.dto.requests;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
-import pe.mil.microservices.components.validations.DocumentNumber;
+import pe.mil.microservices.utils.components.validations.Dni;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -19,7 +19,7 @@ public class SearchMilitarRequest implements Serializable {
     private static final long serialVersionUID = 5230901019196076398L;
 
     @NotBlank
-    @DocumentNumber
+    @Dni
     @Size(max = 8, min = 8)
     private String dni;
 

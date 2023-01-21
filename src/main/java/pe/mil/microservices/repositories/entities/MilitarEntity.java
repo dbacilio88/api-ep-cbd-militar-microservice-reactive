@@ -27,9 +27,6 @@ public class MilitarEntity {
     @Column(name = ENTITY_MILITAR_CIP, length = 9, nullable = false)
     private String cip;
 
-    @Column(name = ENTITY_MILITAR_DNI, length = 8)
-    private String dni;
-
     @NotNull
     @OneToOne
     @JoinColumn(name = ENTITY_PERSON_ID, updatable = false, nullable = false)

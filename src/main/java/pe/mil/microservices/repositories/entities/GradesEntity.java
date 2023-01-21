@@ -31,7 +31,4 @@ public class GradesEntity {
     @NotEmpty
     @Column(name = ENTITY_GRADES_DESCRIPTION)
     private String description;
-
-/*    @OneToOne(mappedBy = "grade", cascade = CascadeType.ALL, orphanRemoval = true)
-    private MilitarEntity militar;*/
 }

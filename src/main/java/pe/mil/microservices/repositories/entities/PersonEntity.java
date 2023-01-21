@@ -35,7 +35,4 @@ public class PersonEntity {
     @NotEmpty
     @Column(name = ENTITY_PERSON_DOCUMENT_NUMBER, length = 8, unique = true)
     private String dni;
-/*
-    @OneToOne(mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
-    private MilitarEntity militar;*/
 }

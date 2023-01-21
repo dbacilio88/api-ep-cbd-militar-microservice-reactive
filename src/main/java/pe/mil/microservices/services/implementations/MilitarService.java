@@ -254,7 +254,6 @@ public class MilitarService implements IMilitarServices {
         final MilitarEntity update = IMilitarMapperByMapstruct
             .MILITAR_MAPPER
             .mapMilitarEntityByRegisterMilitarRequest(request);
-        //update.setDni(update.getPerson().getDni());
         final MilitarEntity updated = this.militarRepository.save(update);
         return updated;
     }
