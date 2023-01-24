@@ -1,0 +1,1 @@
+docker container run -itd -e password=C44910167d$ -e username=postgres -e database=jdbc:postgresql://database-pruebas.ccdkelqbdmyg.sa-east-1.rds.amazonaws.com:5432/bacsystem --name militar-microservice-reactive -p 8003:8003 dbacilio88/militar-microservice-reactive:1.0.0

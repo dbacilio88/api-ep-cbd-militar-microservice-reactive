@@ -11,7 +11,7 @@ server:
 # Spring configuration
 spring:
     webflux:
-        base-path: /militares/v1
+        base-path: /microservices/v1
 
     application:
         name: militares
@@ -54,11 +54,12 @@ spring:
             maximum-pool-size: 20
             validation-timeout: 5000
         driverClassName: org.postgresql.Driver
+        #password: ${password:}
+        #username: ${username}
+        #url: ${database}
         password: postgres
         username: postgres
         url: jdbc:postgresql://localhost:5438/postgres
-
-
 
 # Logger Configuration
 logging:

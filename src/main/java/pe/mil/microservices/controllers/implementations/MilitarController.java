@@ -166,7 +166,7 @@ public class MilitarController implements IMilitarController {
     }
 
     @Override
-    @PutMapping(value = MICROSERVICE_MILITAR_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = UPDATE_MILITAR_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<Object>> update(Mono<RegisterMilitarRequest> request) {
         log.debug("method update initialized successfully");
         log.debug("militarControllerId {}", militarControllerId);

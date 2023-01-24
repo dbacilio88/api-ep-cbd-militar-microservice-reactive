@@ -55,8 +55,6 @@ public class MilitarService implements IMilitarServices {
 
                 final Optional<MilitarEntity> entity = this.militarRepository.findById(id);
 
-                log.info("optional entity find: {} ", entity);
-
                 if (entity.isEmpty()) {
                     return Mono.error(() -> new CommonBusinessProcessException(ResponseCode.SUCCESS_IN_REQUESTED_DATA_NOT_FOUND));
                 } else {
@@ -125,14 +123,12 @@ public class MilitarService implements IMilitarServices {
             .flatMap(request -> {
 
                 boolean exists = this.militarRepository.existsByMilitarId(request.getMilitarId());
-                log.info("exists militar: {} ", exists);
 
                 if (exists) {
                     return Mono.error(() -> new CommonBusinessProcessException(ResponseCode.ERROR_IN_REQUESTED_DATA_EXISTS));
                 }
 
                 final MilitarEntity saved = saveMilitar(request);
-                log.info("saved militar {} ", saved);
 
                 if (Objects.isNull(saved.getMilitarId())) {
                     return Mono.error(() -> new CommonBusinessProcessException(ResponseCode.ERROR_IN_REQUESTED_DATA));
@@ -221,7 +217,7 @@ public class MilitarService implements IMilitarServices {
             .just(genericMessagesBusinessResponse)
             .flatMap(generic -> {
                 final Optional<MilitarEntity> entity = this.militarRepository.findByDni(dni);
-                log.info("entity method {}", entity);
+
                 if (entity.isEmpty()) {
                     return Mono.error(() -> new CommonBusinessProcessException(ResponseCode.SUCCESS_IN_REQUESTED_DATA_NOT_FOUND));
                 } else {
@@ -244,7 +240,6 @@ public class MilitarService implements IMilitarServices {
 
     private GenericBusinessResponse<Militar> searchMilitar(MilitarEntity entity) {
         final Militar target = ObjectMapperHelper.map(entity, Militar.class);
-        log.info("target {} ", target.toString());
         GenericBusinessResponse<Militar> data = new GenericBusinessResponse<>(target);
         return data;
     }
