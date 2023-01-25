@@ -14,6 +14,7 @@ public class ProcessConstants {
     public static final String GET_MILITAR_PATH = "";
     public static final String SAVE_MILITAR_PATH = "";
     public static final String SEARCH_MILITAR_PATH = "/search";
+    public static final String PAGES_MILITAR_PATH = "/pageable";
     public static final String GET_MILITAR_ID_PATH = "/{militarId}";
     public static final String UPDATE_MILITAR_PATH = "";
 

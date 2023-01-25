@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pe.mil.microservices.constants.ProcessConstants;
+import pe.mil.microservices.dto.requests.PageMilitarRequest;
 import pe.mil.microservices.dto.requests.RegisterMilitarRequest;
 import pe.mil.microservices.dto.requests.SearchMilitarRequest;
 import reactor.core.publisher.Mono;
@@ -24,9 +25,12 @@ public interface IMilitarController {
     Mono<ResponseEntity<Object>> findAll();
 
     Mono<ResponseEntity<Object>> getById(@Valid @PathVariable Long militarId);
+
     Mono<ResponseEntity<Object>> getByDni(@Valid @RequestBody SearchMilitarRequest search);
 
     Mono<ResponseEntity<Object>> save(@Valid @RequestBody Mono<RegisterMilitarRequest> request);
 
     Mono<ResponseEntity<Object>> update(@Valid @RequestBody Mono<RegisterMilitarRequest> request);
+
+    Mono<ResponseEntity<Object>> page(@Valid @RequestBody Mono<PageMilitarRequest> request);
 }

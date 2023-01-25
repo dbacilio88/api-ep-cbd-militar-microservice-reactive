@@ -2,11 +2,15 @@ package pe.mil.microservices.services.implementations;
 
 import com.google.common.collect.Lists;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import pe.mil.microservices.components.enums.MilitarValidationResult;
+import pe.mil.microservices.components.enums.PageValidationResult;
 import pe.mil.microservices.components.mappers.contracts.IMilitarMapperByMapstruct;
 import pe.mil.microservices.components.validations.IMilitarRegisterValidation;
+import pe.mil.microservices.components.validations.IPageMilitarValidation;
 import pe.mil.microservices.dto.Militar;
+import pe.mil.microservices.dto.requests.PageMilitarRequest;
 import pe.mil.microservices.dto.requests.RegisterMilitarRequest;
 import pe.mil.microservices.dto.responses.RegisterMilitarResponse;
 import pe.mil.microservices.repositories.contracts.IMilitarRepository;
@@ -14,15 +18,20 @@ import pe.mil.microservices.repositories.entities.MilitarEntity;
 import pe.mil.microservices.services.contracts.IMilitarServices;
 import pe.mil.microservices.utils.components.enums.ResponseCode;
 import pe.mil.microservices.utils.components.exceptions.CommonBusinessProcessException;
+import pe.mil.microservices.utils.components.helpers.CommonPageHelper;
 import pe.mil.microservices.utils.components.helpers.ObjectMapperHelper;
 import pe.mil.microservices.utils.dtos.base.GenericBusinessResponse;
+import pe.mil.microservices.utils.dtos.base.PageableBusinessResponse;
 import pe.mil.microservices.utils.dtos.process.BusinessProcessResponse;
+import pe.mil.microservices.utils.dtos.responses.MetadataResponse;
+import pe.mil.microservices.utils.dtos.responses.PageableResponse;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.*;
+
+import static pe.mil.microservices.utils.components.helpers.CommonPageHelper.*;
 
 @Log4j2
 @Service
@@ -104,6 +113,11 @@ public class MilitarService implements IMilitarServices {
     }
 
     @Override
+    public Iterable<Mono<BusinessProcessResponse>> GetAllEntities() {
+        return null;
+    }
+
+    @Override
     public Mono<BusinessProcessResponse> save(Mono<RegisterMilitarRequest> entity) {
 
         log.info("this is in services save method");
@@ -163,6 +177,70 @@ public class MilitarService implements IMilitarServices {
         this.militarRepository.delete(result.get());
 
         return true;
+    }
+
+    @Override
+    public Mono<BusinessProcessResponse> getPage(Mono<PageMilitarRequest> entity) {
+
+        return entity
+            .flatMap(request -> {
+                final PageValidationResult result = IPageMilitarValidation.isPageMilitarLimitValidation()
+                    .and(IPageMilitarValidation.isPageMilitarPageValidation())
+                    .apply(request);
+
+                if (!PageValidationResult.PAGE_VALID.equals(result)) {
+                    return Mono.error(() -> new CommonBusinessProcessException(ResponseCode.ERROR_IN_REQUESTED_DATA));
+                }
+                return Mono.just(request);
+
+            })
+            .flatMap(request -> {
+
+                int limit = Integer.parseInt(request.getLimit());
+                int page = Integer.parseInt(request.getPage());
+
+                Pageable pageable = PageRequest.of(page - 1, limit);
+                Page<MilitarEntity> militares = this.militarRepository.findAll(pageable);
+
+                PageableBusinessResponse<List<Militar>> response = new PageableBusinessResponse<>();
+
+                response.setData(ObjectMapperHelper.mapAll(Lists.newArrayList(militares.getContent()), Militar.class));
+
+                BigInteger totalRecords = longToBigInteger(militares.getTotalElements());
+                BigDecimal lastPage = getLastPage(totalRecords, request.getLimit());
+                BigInteger nextPageNumber = getNextPageNumber(request.getPage());
+                BigInteger previousPageNumber = previousPageNumber(request.getPage());
+                String nextPageNumberAsString = getNextPageNumber(nextPageNumber, lastPage.toBigInteger(), request.getLimit());
+                String previousPageNumberAsString = getPreviousPageNumber(previousPageNumber, lastPage.toBigInteger(), request.getLimit());
+                String lastPageAsString = getLastPage(lastPage, request.getLimit());
+                String firstPageAsString = getFirstPage(totalRecords, request.getLimit());
+
+                PageableResponse pageableResponse = PageableResponse
+                    .builder()
+                    .total(String.valueOf(militares.getTotalElements()))
+                    .limit(request.getLimit())
+                    .currentPage(request.getPage())
+                    .numberOfElements(String.valueOf(militares.getNumberOfElements()))
+                    .totalPages(String.valueOf(militares.getTotalPages()))
+                    //.firstPageUrl(firstPageAsString)
+                    //.lastPageUrl(lastPageAsString)
+                    //.nextPageUrl(nextPageNumberAsString)
+                    //.prevPageUrl(previousPageNumberAsString)
+                    //.lastPage(String.valueOf(lastPage))
+                    .build();
+
+                response.setMetadata(MetadataResponse.builder()
+                    .pageable(pageableResponse).build());
+
+                return Mono.just(BusinessProcessResponse
+                    .setEntitySuccessfullyResponse(response));
+            })
+            .doOnSuccess(success ->
+                log.info("finish process page, success: {}", success)
+            )
+            .doOnError(throwable ->
+                log.error("exception error in process page, error: {}", throwable.getMessage())
+            );
     }
 
     @Override
@@ -273,4 +351,6 @@ public class MilitarService implements IMilitarServices {
         return BusinessProcessResponse
             .setEntitySuccessfullyResponse(new GenericBusinessResponse<>(response));
     }
+
+
 }

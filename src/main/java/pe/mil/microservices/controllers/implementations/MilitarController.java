@@ -10,12 +10,15 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.support.WebExchangeBindException;
 import pe.mil.microservices.controllers.contracts.IMilitarController;
+import pe.mil.microservices.dto.Militar;
+import pe.mil.microservices.dto.requests.PageMilitarRequest;
 import pe.mil.microservices.dto.requests.RegisterMilitarRequest;
 import pe.mil.microservices.dto.requests.SearchMilitarRequest;
 import pe.mil.microservices.services.contracts.IMilitarServices;
 import pe.mil.microservices.utils.components.exceptions.CommonBusinessProcessException;
 import pe.mil.microservices.utils.constants.LoggerConstants;
 import pe.mil.microservices.utils.dtos.base.BusinessResponse;
+import pe.mil.microservices.utils.dtos.base.PageableBusinessResponse;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
@@ -191,6 +194,34 @@ public class MilitarController implements IMilitarController {
                         .getResponse(e.getResponseCode().getResponseCodeValue())))
             .doOnError(throwable ->
                 log.error("exception error in process update, error: {}", throwable.getMessage())
+            );
+    }
+
+    @Override
+    @PostMapping(path = PAGES_MILITAR_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<ResponseEntity<Object>> page(Mono<PageMilitarRequest> request) {
+        log.debug("method page initialized successfully");
+        log.debug("militarControllerId {}", militarControllerId);
+
+        return this.militarServices.getPage(request)
+            .flatMap(processResponse -> {
+                if (processResponse.isErrorProcessResponse() || processResponse.isEmptySuccessfullyResponse()) {
+                    return Mono.just(businessResponse
+                        .getResponse(processResponse.getResponseCode().getResponseCodeValue()));
+                }
+                return Mono.just(businessResponse
+                    .getResponse(processResponse.getBusinessResponse(),
+                        processResponse.getResponseCode().getResponseCodeValue()));
+            }).doOnSuccess(success ->
+                log.info("finish process update")
+            )
+            .onErrorResume(WebExchangeBindException.class, Mono::error)
+            .onErrorResume(CommonBusinessProcessException.class, e -> Mono
+                .just(
+                    businessResponse
+                        .getResponse(e.getResponseCode().getResponseCodeValue())))
+            .doOnError(throwable ->
+                log.error("exception error in process page, error: {}", throwable.getMessage())
             );
     }
 }

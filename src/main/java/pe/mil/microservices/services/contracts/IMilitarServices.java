@@ -1,6 +1,7 @@
 package pe.mil.microservices.services.contracts;
 
 import pe.mil.microservices.dto.Militar;
+import pe.mil.microservices.dto.requests.PageMilitarRequest;
 import pe.mil.microservices.dto.requests.RegisterMilitarRequest;
 import pe.mil.microservices.services.interfaces.IGetDomainEntityByDni;
 import pe.mil.microservices.utils.dtos.process.BusinessProcessResponse;
@@ -14,5 +15,6 @@ public interface IMilitarServices
     ISaveDomainEntity<Mono<BusinessProcessResponse>, Mono<RegisterMilitarRequest>>,
     IUpdateDomainEntity<Mono<BusinessProcessResponse>, Mono<RegisterMilitarRequest>>,
     IDeleteDomainEntity<Militar>,
-    IGetDomainEntityByDni<Mono<BusinessProcessResponse>, String> {
+    IGetDomainEntityByDni<Mono<BusinessProcessResponse>, String>,
+    IGetDomainEntityPage<Mono<BusinessProcessResponse>, Mono<PageMilitarRequest>> {
 }
