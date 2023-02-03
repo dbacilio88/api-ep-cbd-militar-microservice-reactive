@@ -2,6 +2,10 @@ package pe.mil.microservices.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
+import pe.mil.microservices.utils.components.validations.Dni;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 @Data
@@ -14,8 +18,10 @@ public class Militar implements Serializable {
 
     private static final long serialVersionUID = -6951550954051995262L;
 
-    private long militarId;
-    private String cip;
+    @NotBlank
+    @Dni
+    @Size(max = 9, min = 9)
+    private String militarId;
     private Person person;
     private Grade grade;
     private Specialty specialty;

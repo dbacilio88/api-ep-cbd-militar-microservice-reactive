@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 
 public interface IMilitarServices
     extends
-    IGetDomainEntityById<Mono<BusinessProcessResponse>, Long>,
+    IGetDomainEntityById<Mono<BusinessProcessResponse>, String>,
     IGetAllDomainEntity<Mono<BusinessProcessResponse>>,
     ISaveDomainEntity<Mono<BusinessProcessResponse>, Mono<RegisterMilitarRequest>>,
     IUpdateDomainEntity<Mono<BusinessProcessResponse>, Mono<RegisterMilitarRequest>>,

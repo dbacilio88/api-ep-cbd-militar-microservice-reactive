@@ -2,8 +2,6 @@ package pe.mil.microservices.dto.requests;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
-import pe.mil.microservices.utils.components.validations.Dni;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.Serializable;

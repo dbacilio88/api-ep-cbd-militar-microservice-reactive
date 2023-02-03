@@ -10,19 +10,11 @@ import java.util.function.Predicate;
 public interface IMilitarRegisterValidation
     extends Function<RegisterMilitarRequest, MilitarValidationResult> {
 
-    static IMilitarRegisterValidation isMilitarCipValidation() {
-        return request ->
-            request.getCip() != null
-                && !request.getCip().isEmpty()
-                && !request.getCip().isBlank()
-
-                ? MilitarValidationResult.MILITAR_VALID
-                : MilitarValidationResult.INVALID_MILITAR_CIP;
-    }
-
     static IMilitarRegisterValidation isMilitarIdValidation() {
         return request ->
             request.getMilitarId() != null
+                && !request.getMilitarId().isBlank()
+                && !request.getMilitarId().isEmpty()
                 ? MilitarValidationResult.MILITAR_VALID
                 : MilitarValidationResult.INVALID_MILITAR_ID;
     }
@@ -51,7 +43,7 @@ public interface IMilitarRegisterValidation
     static IMilitarRegisterValidation customValidation(Predicate<RegisterMilitarRequest> validate) {
         return request -> validate.test(request)
             ? MilitarValidationResult.MILITAR_VALID
-            : MilitarValidationResult.INVALID_MILITAR_CIP;
+            : MilitarValidationResult.INVALID_MILITAR_ID;
     }
 
     default IMilitarRegisterValidation and(IMilitarRegisterValidation andValidation) {

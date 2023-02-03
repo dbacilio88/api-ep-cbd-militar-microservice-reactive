@@ -24,7 +24,7 @@ public interface IMilitarController {
 
     Mono<ResponseEntity<Object>> findAll();
 
-    Mono<ResponseEntity<Object>> getById(@Valid @PathVariable Long militarId);
+    Mono<ResponseEntity<Object>> getById(@Valid @PathVariable String militarId);
 
     Mono<ResponseEntity<Object>> getByDni(@Valid @RequestBody SearchMilitarRequest search);
 

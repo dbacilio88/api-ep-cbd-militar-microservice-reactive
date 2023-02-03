@@ -1,0 +1,9 @@
+{
+    "ProjectSettings": {
+        "repositoryBranch": "develop"
+    },
+    "DockerSettings": {
+        "registryUrl": "https://hub.docker.com/",
+        "imageName": "api-ep-cbd-militar-microservice-reactive"
+    }
+}

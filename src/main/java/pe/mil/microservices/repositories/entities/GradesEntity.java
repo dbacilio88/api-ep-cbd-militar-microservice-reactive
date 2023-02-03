@@ -4,7 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import static pe.mil.microservices.constants.RepositoryEntitiesConstants.*;
 
@@ -20,9 +20,10 @@ public class GradesEntity {
 
     @Id
     @Basic(optional = false)
-    @NotNull
-    @Column(name = ENTITY_GRADES_ID)
-    private Long gradeId;
+    @NotEmpty
+    @Size(min = 3, max = 3)
+    @Column(name = ENTITY_GRADES_ID, length = 3, unique = true, updatable = false)
+    private String gradeId;
 
     @NotEmpty
     @Column(name = ENTITY_GRADES_NAME, unique = true)

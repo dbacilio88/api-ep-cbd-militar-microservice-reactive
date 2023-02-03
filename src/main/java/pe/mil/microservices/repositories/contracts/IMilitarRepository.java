@@ -9,9 +9,11 @@ import pe.mil.microservices.repositories.entities.MilitarEntity;
 import java.util.Optional;
 
 @Repository
-public interface IMilitarRepository extends JpaRepository<MilitarEntity, Long> {
-    boolean existsByMilitarId(Long customerId);
+public interface IMilitarRepository extends JpaRepository<MilitarEntity, String> {
+    @Query("SELECT CASE WHEN count(m) > 0 THEN true ELSE false END FROM MilitarEntity m where  m.militarId = :militarId AND m.person.personId = :personId")
+    boolean existsByMilitarIdAndPerson(@Param("militarId") String militarId, @Param("personId") String personId);
 
-    @Query(value = "SELECT m FROM MilitarEntity m WHERE m.person.dni = :dni")
-    Optional<MilitarEntity> findByDni(@Param("dni") String dni);
+    @Query(value = "SELECT m FROM MilitarEntity m WHERE m.person.personId = :personId")
+    Optional<MilitarEntity> findByDni(@Param("personId") String personId);
+
 }

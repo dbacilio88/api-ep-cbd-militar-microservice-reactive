@@ -1,25 +1,27 @@
 # Embedded Server configuration
 server:
     port: 8003
-#    compression:
-#        enabled: true
-#    tomcat:
-#        uri-encoding: UTF-8
-#    error:
-#        include-stacktrace: never
-
+    compression:
+        enabled: true
+    tomcat:
+        uri-encoding: UTF-8
+    error:
+        include-stacktrace: never
 # Spring configuration
 spring:
     webflux:
         base-path: /microservices/v1
-
     application:
         name: militares
         version: 1.0.0
         log: /logs
     messages:
         encoding: UTF-8
-    version: 2.4.0
+    profiles:
+        active:
+            - test
+
+    version: 2.7.7
     main:
         banner-mode: log
         lazy-initialization: false

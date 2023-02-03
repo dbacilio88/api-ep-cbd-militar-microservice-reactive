@@ -1,0 +1,19 @@
+version: '3.9'
+services:
+    jenkins-app:
+        user: root
+        privileged: true
+        image: "jenkins/jenkins"
+        ports:
+            - "8080:8080"
+            - "50000:50000"
+        restart: always
+        volumes:
+            - "C:/Users/cbacilio/Documents/novopayment/ambiente/cbd/docker/volumes/jenkins:/var/jenkins_home/"
+            - "/usr/local/bin/docker:/usr/bin/docker"
+        networks:
+            - test-networks-local
+
+networks:
+    test-networks-local:
+        driver: bridge

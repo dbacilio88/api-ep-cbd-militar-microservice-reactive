@@ -1,10 +1,7 @@
 package pe.mil.microservices.components.validations;
 
-import pe.mil.microservices.components.enums.MilitarValidationResult;
 import pe.mil.microservices.components.enums.PageValidationResult;
 import pe.mil.microservices.dto.requests.PageMilitarRequest;
-import pe.mil.microservices.dto.requests.RegisterMilitarRequest;
-
 import java.util.function.Function;
 import java.util.function.Predicate;
 
