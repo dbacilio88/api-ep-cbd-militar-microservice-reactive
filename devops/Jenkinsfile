@@ -59,51 +59,50 @@ node {
       }
     }
   }
+}
+pipeline {
+  agent any
+  tools {
+    maven 'maven_3.6.3'
+    jdk 'openjdk11'
+  }
 
-  pipeline {
-    agent any
-    tools {
-      maven 'maven_3.6.3'
-      jdk 'openjdk11'
-    }
+  environment {
+    versionProject = ''
+    nameProject = ''
+    buildNumber = ''
+    publishPath = ''
+    envGitHubCredentials = credentials('github-enterprise-cicd-account')
+    envRegistryCredentials = credentials('nexus-cicd-account')
+  }
 
-    environment {
-      versionProject = ''
-      nameProject = ''
-      buildNumber = ''
-      publishPath = ''
-      envGitHubCredentials = credentials('github-enterprise-cicd-account')
-      envRegistryCredentials = credentials('nexus-cicd-account')
-    }
-
-    stages {
-      stage("Initialize") {
-        steps {
-          echo "JAVA_HOME=${tool 'openjdk11'}"
-          echo "PATH=${PATH}"
-          echo "M2_HOME=${M2_HOME}"
-          echo "MAVEN_HOME=${M2_HOME}"
-        }
+  stages {
+    stage("Initialize") {
+      steps {
+        echo "JAVA_HOME=${tool 'openjdk11'}"
+        echo "PATH=${PATH}"
+        echo "M2_HOME=${M2_HOME}"
+        echo "MAVEN_HOME=${M2_HOME}"
       }
+    }
 
-      stage('Get checksum git') {
-        steps {
-          deleteDir()
-          echo "REPOSITORY BRANCH: ${repositoryBranchApp}"
-          echo "REPOSITORY NAME: ${repositoryName}"
-          echo "CREDENTIAL OF: ${repositoryUser}"
-          echo "CREDENTIAL OF: ${getBuildUser}"
-          script {
-            try {
-              git branch: "${repositoryBranchApp}", url: "https://${repositoryName}", credentialsId: "${getBuildUser}"
-            } catch (err) {
-              echo err.getMessage()
-              echo "ERROR USER THAT TRIGGERED THE EVENT DOES NOT HAVE CREDENTIALS IN JENKINS."
-            }
-            buildNumber = sh(returnStdout: true, script: 'git rev-parse HEAD')
+    stage('Get checksum git') {
+      steps {
+        deleteDir()
+        echo "REPOSITORY BRANCH: ${repositoryBranchApp}"
+        echo "REPOSITORY NAME: ${repositoryName}"
+        echo "CREDENTIAL OF: ${repositoryUser}"
+        echo "CREDENTIAL OF: ${getBuildUser}"
+        script {
+          try {
+            git branch: "${repositoryBranchApp}", url: "https://${repositoryName}", credentialsId: "${getBuildUser}"
+          } catch (err) {
+            echo err.getMessage()
+            echo "ERROR USER THAT TRIGGERED THE EVENT DOES NOT HAVE CREDENTIALS IN JENKINS."
           }
-          echo "BUILD NUMBER: ${buildNumber}"
+          buildNumber = sh(returnStdout: true, script: 'git rev-parse HEAD')
         }
+        echo "BUILD NUMBER: ${buildNumber}"
       }
     }
   }
