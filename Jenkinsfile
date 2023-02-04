@@ -25,7 +25,7 @@ node {
   ])
 
   wrap([$class: 'BuildUser']) {
-    getBuildUser = env.BUILD_USER_ID
+    getBuildUser = 'dbacilio88'
      echo "BUILD_USER_ID: ${getBuildUser}";
   }
 
