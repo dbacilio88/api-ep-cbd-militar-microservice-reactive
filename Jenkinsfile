@@ -25,7 +25,7 @@ node {
   ])
 
   wrap([$class: 'BuildUser']) {
-    getBuildUser = 'dbacilio88'
+    getBuildUser = env.BUILD_USER_ID
      echo "BUILD_USER_ID: ${getBuildUser}";
   }
 
@@ -52,7 +52,9 @@ node {
         repositoryName = processRepository.clone_url.replaceAll("https://", "")
         repositoryUser = processPusher.name
         getBuildUser = repositoryUser
-
+        echo "BUILD: ${getBuildUser}";
+        echo "JSON: ${processRepository}";
+        echo "PUSHER: ${processPusher}";
         echo "USER: ${repositoryUser}";
         echo "EMAIL: ${processRepository.owner.email}";
         echo "BRANCH: ${repositoryBranchApp}";
