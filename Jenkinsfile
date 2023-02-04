@@ -17,7 +17,7 @@ node {
           [key: 'commit', value: '$.after'],
         ],
         causeString: '[$committer_name] pushed from branch [$ref] referencing [$commit]',
-        token: 'api-ep-cbd-militar-microservice-reactive',
+        token: 'bacsystem',
         printContributedVariables: true,
         printPostContent: true
       ]
