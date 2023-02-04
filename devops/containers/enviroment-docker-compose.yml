@@ -32,6 +32,18 @@ services:
             - "C:/Users/cbacilio/Documents/novopayment/ambiente/cbd/docker/volumes/postgresql:/var/lib/postgresql/data"
         networks:
             - test-networks-local
+    ngrok-app:
+        image: "ngrok/ngrok"
+        environment:
+            - NGROK_REGION=eu
+            - NGROK_PORT=nginx:80
+            - NGROK_DEBUG=1
+        ports:
+            - '8081:8081'
+
+        networks:
+            - test-networks-local
+
 networks:
     test-networks-local:
         driver: bridge

@@ -2,3 +2,5 @@
 - Generic Webhook Trigger
 - Docker
 - Nexus Platform
+- Multibranch Scan Webhook Trigger
+- create webhook: https://eada-190-233-34-154.sa.ngrok.io/jenkins/multibranch-webhook-trigger/invoke?token=bacystem

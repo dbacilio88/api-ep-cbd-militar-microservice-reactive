@@ -59,3 +59,6 @@ docker run -d --restart=always --link socat:socat  -p 8080:8080 -p 50000:50000 -
 docker run -d --restart=always -p  host.docker.internal:2376:2375 -v /var/run/docker.sock:/var/run/docker.sock alpine/socat tcp-listen:2375,fork,reuseaddr unix-connect:/var/run/docker.sock
 docker run -d --restart=always -p 8080:8080 -p 50000:50000 -v "C:/Users/cbacilio/Documents/novopayment/ambiente/cbd/docker/volumes/jenkins:/var/jenkins_home/" -v //var/run/docker.sock:/var/run/docker.sock -u root jenkins/jenkins
 docker run -d --restart=always -p 192.168.1.14:2376:2375 -v /var/run/docker.sock:/var/run/docker.sock alpine/socat tcp-listen:2375,fork,reuseaddr unix-connect:/var/run/docker.sock
+
+
+docker run -it --p 3000:4040 ngrok/ngrok http 80
