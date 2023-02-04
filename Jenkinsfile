@@ -63,8 +63,8 @@ node {
 pipeline {
   agent any
   tools {
-    maven 'M2'
-    jdk 'JAVA_HOME'
+    maven '3.6.3'
+    jdk 'Java 11.0.16'
   }
 
   environment {
