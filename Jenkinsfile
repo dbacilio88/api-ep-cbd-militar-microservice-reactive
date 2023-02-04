@@ -14,7 +14,7 @@ node {
           [key: 'repository', value: '$.repository'],
           [key: 'pusher', value: '$.pusher'],
           [key: 'committer_name', value: '$.pusher.name'],
-          [key: 'commit', value: '$.after']
+          [key: 'commit', value: '$.after'],
         ],
         causeString: '[$committer_name] pushed from branch [$ref] referencing [$commit]',
         token: 'api-ep-cbd-militar-microservice-reactive',
@@ -26,7 +26,7 @@ node {
 
   wrap([$class: 'BuildUser']) {
     getBuildUser = env.BUILD_USER_ID
-     echo "BUILD_USER_ID: ${getBuildUser}";
+    echo "BUILD_USER_ID: ${getBuildUser}";
   }
 
   stage("Prepare Webhook") {
@@ -44,9 +44,8 @@ node {
       echo "PUSHER: $pusher"
     }
     echo "PREPARE WEBHOOK PUSHER";
-      echo "PREPARE WEBHOOK END";
+    echo "PREPARE WEBHOOK END";
   }
-
 
   stage('Load Webhook Data') {
     script {
@@ -57,7 +56,7 @@ node {
         repositoryBranchApp = ref.replaceAll("refs/heads/", "")
         processRepository = readJSON text: repository
         processPusher = readJSON text: pusher
-        repositoryName = processRepository.clone_url.replaceAll("https://", "")
+        repositoryName = processRepository.clone_url.replaceAll("https://", "");
         repositoryUser = processPusher.name
         getBuildUser = repositoryUser
         echo "BUILD: ${getBuildUser}";
@@ -67,6 +66,8 @@ node {
         echo "EMAIL: ${processRepository.owner.email}";
         echo "BRANCH: ${repositoryBranchApp}";
         echo "REPOSITORY: ${repositoryName}";
+      } else {
+        echo "LOAD WEBHOOK DATA SCRIP ELSE";
       }
 
       echo "LOAD WEBHOOK DATA SCRIP END";
@@ -74,7 +75,9 @@ node {
   }
 }
 pipeline {
+
   agent any
+
   tools {
     maven '3.6.3'
     jdk '11.0.16'
@@ -118,10 +121,3 @@ pipeline {
     }
   }
 }
-
-
-
-
-
-
-
