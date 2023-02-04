@@ -73,16 +73,15 @@ pipeline {
     nameProject = ''
     buildNumber = ''
     publishPath = ''
-
   }
 
   stages {
     stage("Initialize") {
       steps {
-        echo "JAVA_HOME=${tool 'openjdk11'}"
+        echo "JAVA_HOME=${tool '11.0.16'}"
         echo "PATH=${PATH}"
-        echo "M2_HOME=${M2_HOME}"
-        echo "MAVEN_HOME=${M2_HOME}"
+        echo "M2=${M2}"
+        echo "MAVEN_HOME=${M2}"
       }
     }
 
