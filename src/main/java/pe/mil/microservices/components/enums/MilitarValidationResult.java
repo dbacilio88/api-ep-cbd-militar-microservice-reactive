@@ -6,5 +6,7 @@ public enum MilitarValidationResult {
     INVALID_MILITAR_ID,
     INVALID_PERSON,
     INVALID_GRADE,
-    INVALID_SPECIALTY;
+    INVALID_SPECIALTY
+
+
 }
