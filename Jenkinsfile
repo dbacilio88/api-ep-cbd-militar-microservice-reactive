@@ -73,8 +73,7 @@ pipeline {
     nameProject = ''
     buildNumber = ''
     publishPath = ''
-    envGitHubCredentials = credentials('github-enterprise-cicd-account')
-   
+
   }
 
   stages {
