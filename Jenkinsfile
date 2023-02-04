@@ -44,6 +44,8 @@ node {
 
   stage('Load Webhook Data') {
     script {
+      echo "LOAD WEBHOOK DATA SCRIP START";
+
       if (env.ref && env.repository && env.pusher) {
         echo "READING JSON"
         repositoryBranchApp = ref.replaceAll("refs/heads/", "")
@@ -60,6 +62,7 @@ node {
         echo "BRANCH: ${repositoryBranchApp}";
         echo "REPOSITORY: ${repositoryName}";
       }
+      echo "LOAD WEBHOOK DATA SCRIP END";
     }
   }
 }
