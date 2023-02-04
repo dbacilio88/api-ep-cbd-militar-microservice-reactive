@@ -94,7 +94,7 @@ pipeline {
         echo "CREDENTIAL OF: ${getBuildUser}"
         script {
           try {
-            git branch: "${repositoryBranchApp}", url: "https://${repositoryName}", credentialsId: "${getBuildUser}"
+            git branch: "${repositoryBranchApp}", url: "${repositoryName}", credentialsId: "${getBuildUser}"
           } catch (err) {
             echo err.getMessage()
             echo "ERROR USER THAT TRIGGERED THE EVENT DOES NOT HAVE CREDENTIALS IN JENKINS."
