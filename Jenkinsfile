@@ -62,6 +62,7 @@ node {
         echo "BRANCH: ${repositoryBranchApp}";
         echo "REPOSITORY: ${repositoryName}";
       }
+      
       echo "LOAD WEBHOOK DATA SCRIP END";
     }
   }
