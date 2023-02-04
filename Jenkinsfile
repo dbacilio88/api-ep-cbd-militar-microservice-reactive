@@ -31,15 +31,20 @@ node {
 
   stage("Prepare Webhook") {
     deleteDir()
+    echo "PREPARE WEBHOOK START";
     if (env.ref) {
       echo "REF: $ref"
     }
+    echo "PREPARE WEBHOOK REF";
     if (env.repository) {
       echo "REPOSITORY: $repository"
     }
+    echo "PREPARE WEBHOOK REPOSITORY";
     if (env.pusher) {
       echo "PUSHER: $pusher"
     }
+    echo "PREPARE WEBHOOK PUSHER";
+      echo "PREPARE WEBHOOK END";
   }
 
 
