@@ -29,7 +29,25 @@ node {
     echo "BUILD_USER_ID: ${getBuildUser}";
   }
 
-stage('Load Webhook Data') {
+  stage("Prepare Webhook") {
+    deleteDir()
+    echo "PREPARE WEBHOOK START";
+    if (env.ref) {
+      echo "REF: $ref"
+    }
+    echo "PREPARE WEBHOOK REF";
+    if (env.repository) {
+      echo "REPOSITORY: $repository"
+    }
+    echo "PREPARE WEBHOOK REPOSITORY";
+    if (env.pusher) {
+      echo "PUSHER: $pusher"
+    }
+    echo "PREPARE WEBHOOK PUSHER";
+    echo "PREPARE WEBHOOK END";
+  }
+
+  stage('Load Webhook Data') {
     script {
       echo "LOAD WEBHOOK DATA SCRIP START";
       echo "LOAD WEBHOOK REF ${env.ref}";
@@ -58,26 +76,6 @@ stage('Load Webhook Data') {
       echo "LOAD WEBHOOK DATA SCRIP END";
     }
   }
-
-  stage("Prepare Webhook") {
-    deleteDir()
-    echo "PREPARE WEBHOOK START";
-    if (env.ref) {
-      echo "REF: $ref"
-    }
-    echo "PREPARE WEBHOOK REF";
-    if (env.repository) {
-      echo "REPOSITORY: $repository"
-    }
-    echo "PREPARE WEBHOOK REPOSITORY";
-    if (env.pusher) {
-      echo "PUSHER: $pusher"
-    }
-    echo "PREPARE WEBHOOK PUSHER";
-    echo "PREPARE WEBHOOK END";
-  }
-
-
 }
 pipeline {
 

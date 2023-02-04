@@ -6,7 +6,6 @@ import pe.mil.microservices.utils.base.MicroserviceApplication;
 import pe.mil.microservices.utils.components.properties.MicroserviceProperties;
 import javax.validation.constraints.NotNull;
 
-
 @SpringBootApplication
 public class Application extends MicroserviceApplication {
 
