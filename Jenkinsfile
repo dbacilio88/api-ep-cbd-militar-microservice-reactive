@@ -64,7 +64,7 @@ pipeline {
   agent any
   tools {
     maven '3.6.3'
-    jdk 'Java 11.0.16'
+    jdk '11.0.16'
   }
 
   environment {
