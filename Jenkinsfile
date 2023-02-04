@@ -6,6 +6,10 @@ def processPusher = ''
 def repositoryUser = ''
 
 node {
+
+  echo "PREPARE NODE START";
+
+
   properties([
     pipelineTriggers([
       [$class: 'GenericTrigger',
@@ -24,11 +28,14 @@ node {
     ])
   ])
 
+  echo "PREPARE NODE END";
+  echo "PREPARE BUILDER START";
   wrap([$class: 'BuildUser']) {
     getBuildUser = env.BUILD_USER_ID
     echo "BUILD_USER_ID: ${getBuildUser}";
   }
-
+  echo "PREPARE BUILDER END";
+  echo "PREPARE WEBHOOK - i";
   stage("Prepare Webhook") {
     deleteDir()
     echo "PREPARE WEBHOOK START";
@@ -46,7 +53,8 @@ node {
     echo "PREPARE WEBHOOK PUSHER";
     echo "PREPARE WEBHOOK END";
   }
-
+  echo "PREPARE WEBHOOK - e";
+  echo "PREPARE WEBHOOK DATA - i";
   stage('Load Webhook Data') {
     script {
       echo "LOAD WEBHOOK DATA SCRIP START";
@@ -76,24 +84,29 @@ node {
       echo "LOAD WEBHOOK DATA SCRIP END";
     }
   }
+  echo "PREPARE WEBHOOK DATA - e";
 }
 pipeline {
-
+  echo "PREPARE AGENT - i";
   agent any
-
+  echo "PREPARE AGENT - e";
+  echo "PREPARE TOOLS - i";
   tools {
     maven '3.6.3'
     jdk '11.0.16'
   }
-
+  echo "PREPARE TOOLS - e";
+  echo "PREPARE ENVIRONMENT - i";
   environment {
     versionProject = ''
     nameProject = ''
     buildNumber = ''
     publishPath = ''
   }
-
+  echo "PREPARE ENVIRONMENT - e";
+  echo "PREPARE STAGES - I";
   stages {
+  echo "PREPARE STAGES - INITIALIZE I";
     stage("Initialize") {
       steps {
         echo "JAVA_HOME=${tool '11.0.16'}"
@@ -102,6 +115,8 @@ pipeline {
         echo "MAVEN_HOME=${M2}"
       }
     }
+  echo "PREPARE STAGES - INITIALIZE E";
+  echo "PREPARE STAGES - CHECKSUM I";
 
     stage('Get checksum git') {
       steps {
@@ -122,5 +137,6 @@ pipeline {
         echo "BUILD NUMBER: ${buildNumber}"
       }
     }
+  echo "PREPARE STAGES - CHECKSUM I";
   }
 }
