@@ -50,6 +50,9 @@ node {
   stage('Load Webhook Data') {
     script {
       echo "LOAD WEBHOOK DATA SCRIP START";
+      echo "LOAD WEBHOOK REF ${env.ref}";
+      echo "LOAD WEBHOOK REPOSITORY ${env.repository}";
+      echo "LOAD WEBHOOK PUSHER ${env.pusher}";
 
       if (env.ref && env.repository && env.pusher) {
         echo "READING JSON"
