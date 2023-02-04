@@ -26,6 +26,7 @@ node {
 
   wrap([$class: 'BuildUser']) {
     getBuildUser = env.BUILD_USER_ID
+     echo "BUILD_USER_ID: ${getBuildUser}";
   }
 
   stage("Prepare Webhook") {
@@ -73,7 +74,7 @@ pipeline {
     buildNumber = ''
     publishPath = ''
     envGitHubCredentials = credentials('github-enterprise-cicd-account')
-    envRegistryCredentials = credentials('nexus-cicd-account')
+   
   }
 
   stages {

@@ -1,0 +1,4 @@
+#add plugins
+- Generic Webhook Trigger
+- Docker
+- Nexus Platform
