@@ -4,7 +4,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import pe.mil.microservices.utils.base.MicroserviceApplication;
 import pe.mil.microservices.utils.components.properties.MicroserviceProperties;
-
 import javax.validation.constraints.NotNull;
 
 
