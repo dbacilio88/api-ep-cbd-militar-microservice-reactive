@@ -79,10 +79,9 @@ node {
   }
 }
 pipeline {
-  echo "PREPARE AGENT - i";
+
   agent any
-  echo "PREPARE AGENT - e";
-  echo "PREPARE TOOLS - i";
+
   tools {
     maven '3.6.3'
     jdk '11.0.16'
@@ -95,18 +94,19 @@ pipeline {
     publishPath = ''
     ENV_GITHUB_CREDENTIALS = credentials('github-id')
     ENV_NEXUS_CREDENTIALS = credentials('nexus-id')
-     echo "USER: ${ENV_GITHUB_CREDENTIALS_USR}";
-     echo "PWD: ${ENV_GITHUB_CREDENTIALS_PSW}";
+
   }
 
   stages {
-    echo "PREPARE STAGES - INITIALIZE I";
+
     stage("Initialize") {
       steps {
         echo "JAVA_HOME=${tool '11.0.16'}"
         echo "PATH=${PATH}"
         echo "M2=${M2}"
         echo "MAVEN_HOME=${M2}"
+        echo "USER: ${ENV_GITHUB_CREDENTIALS_USR}";
+        echo "PWD: ${ENV_GITHUB_CREDENTIALS_PSW}";
       }
     }
 
