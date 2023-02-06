@@ -48,6 +48,7 @@ node {
     echo "PREPARE WEBHOOK END";
   }
 
+
   stage('Load Webhook Data') {
     script {
       echo "LOAD WEBHOOK DATA SCRIP START";
@@ -105,8 +106,8 @@ pipeline {
         echo "PATH=${PATH}"
         echo "M2=${M2}"
         echo "MAVEN_HOME=${M2}"
-        echo "USER: ${ENV_GITHUB_CREDENTIALS_USR}";
-        echo "PWD: ${ENV_GITHUB_CREDENTIALS_PSW}";
+        echo "GITHUB: ${ENV_GITHUB_CREDENTIALS_USR}";
+        echo "NEXUS: ${ENV_NEXUS_CREDENTIALS_USR}";
       }
     }
 
