@@ -7,22 +7,22 @@ def repositoryUser = ''
 
 node {
     properties([
-    pipelineTriggers([
-        [$class: 'GenericTrigger',
-        genericVariables: [
-            [ key: 'ref', value: '$.ref' ],
-            [ key: 'repository', value: '$.repository' ],
-            [ key: 'pusher', value: '$.pusher' ],
-            [ key: 'committer_name', value: '$.pusher.name' ],
-            [ key: 'commit', value: '$.after' ],
-        ],
-        causeString: '[$committer_name] pushed from branch [$ref] referencing [$commit]',
-        token: 'microservice-militar',
-        printContributedVariables: true,
-        printPostContent: true,
-        ]
+        pipelineTriggers([
+            [$class: 'GenericTrigger',
+                genericVariables: [
+                    [ key: 'ref', value: '$.ref' ],
+                    [ key: 'repository', value: '$.repository' ],
+                    [ key: 'pusher', value: '$.pusher' ],
+                    [ key: 'committer_name', value: '$.pusher.name' ],
+                    [ key: 'commit', value: '$.after' ],
+                ],
+                causeString: '[$committer_name] pushed from branch [$ref] referencing [$commit]',
+                token: 'microservice-militar',
+                printContributedVariables: true,
+                printPostContent: true,
+            ]
+        ])
     ])
-])
     wrap([$class: 'BuildUser']) {
         getBuildUser = env.BUILD_USER_ID
     }
