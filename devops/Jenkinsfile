@@ -107,7 +107,6 @@ pipeline {
             echo err.getMessage()
             echo "ERROR USER THAT TRIGGERED THE EVENT DOES NOT HAVE CREDENTIALS IN JENKINS."
           }
-          buildNumber = sh(returnStdout: true, script: 'git rev-parse HEAD')
         }
         echo "BUILD NUMBER: ${buildNumber}"
       }
