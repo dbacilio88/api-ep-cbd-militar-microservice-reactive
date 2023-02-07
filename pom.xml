@@ -347,12 +347,12 @@
         <repository>
             <id>bacsystem-central</id>
             <name>bacsystem-central</name>
-            <url>http://192.168.1.14:8081/repository/maven-releases/</url>
+            <url>http://localhost:8081/repository/maven-releases/</url>
         </repository>
         <snapshotRepository>
             <id>bacsystem-central-snapshot</id>
             <name>bacsystem-central-snapshot</name>
-            <url>http://192.168.1.14:8081/repository/maven-snapshots/</url>
+            <url>http://localhost:8081/repository/maven-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 
@@ -360,7 +360,7 @@
         <repository>
             <id>bacsystem-central</id>
             <name>bacsystem-central</name>
-            <url>http://192.168.1.14:8081/repository/maven-public/</url>
+            <url>http://localhost:8081/repository/maven-public/</url>
         </repository>
     </repositories>
 
