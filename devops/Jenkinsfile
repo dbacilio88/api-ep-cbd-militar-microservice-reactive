@@ -14,16 +14,13 @@ node {
                     [ key: 'repository', value: '$.repository' ],
                     [ key: 'pusher', value: '$.pusher' ],
                     [ key: 'committer_name', value: '$.pusher.name' ],
-                    [ key: 'commit', value: '$.after' ],
-                    [key: 'commit_titles', value: '$.commits[*].title']
+                    [ key: 'commit', value: '$.after' ]
                 ],
                 token: 'microservice-militar',
                 causeString: '[$committer_name] pushed from branch [$ref] referencing [$commit]',
                 printContributedVariables: true,
                 printPostContent: true,
-                silentResponse: false,
-                regexpFilterText: 'BRANCH: $ref COMMIT_TITLES: $commit_titles END',
-                regexpFilterExpression: "BRANCH: refs/heads/master COMMIT_TITLES .*?(Merge pull request).*? END"
+                silentResponse: false
 
             ]
         ])
