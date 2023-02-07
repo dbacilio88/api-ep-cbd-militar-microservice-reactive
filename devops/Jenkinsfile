@@ -6,81 +6,61 @@ def processPusher = ''
 def repositoryUser = ''
 
 node {
-
-  properties([
+    properties([
     pipelineTriggers([
-      [$class: 'GenericTrigger',
+        [$class: 'GenericTrigger',
         genericVariables: [
-          [key: 'ref', value: '$.ref'],
-          [key: 'repository', value: '$.repository'],
-          [key: 'pusher', value: '$.pusher'],
-          [key: 'committer_name', value: '$.pusher.name'],
-          [key: 'commit', value: '$.after'],
+            [ key: 'ref', value: '$.ref' ],
+            [ key: 'repository', value: '$.repository' ],
+            [ key: 'pusher', value: '$.pusher' ],
+            [ key: 'committer_name', value: '$.pusher.name' ],
+            [ key: 'commit', value: '$.after' ],
         ],
         causeString: '[$committer_name] pushed from branch [$ref] referencing [$commit]',
         token: 'microservice-militar',
         printContributedVariables: true,
-        printPostContent: true
-      ]
+        printPostContent: true,
+        ]
     ])
-  ])
-
-  wrap([$class: 'BuildUser']) {
-    getBuildUser = env.BUILD_USER_ID
-    echo "BUILD_USER_ID: ${getBuildUser}";
-  }
-
-  stage("Prepare Webhook") {
-    deleteDir()
-    echo "PREPARE WEBHOOK START";
-    if (env.ref) {
-      echo "REF: $ref"
+])
+    wrap([$class: 'BuildUser']) {
+        getBuildUser = env.BUILD_USER_ID
     }
-    echo "PREPARE WEBHOOK REF";
-    if (env.repository) {
-      echo "REPOSITORY: $repository"
+
+    stage("Prepare Webhook") {
+        deleteDir()
+        if(env.ref) {
+            echo "Ref: $ref"
+        }
+        if(env.repository) {
+            echo "Repository: $repository"
+       }
+       if(env.pusher) {
+            echo "Pusher: $pusher"
+       }
     }
-    echo "PREPARE WEBHOOK REPOSITORY";
-    if (env.pusher) {
-      echo "PUSHER: $pusher"
+
+    stage('Load Webhook Data') {
+        script {
+            if(env.ref && env.repository && env.pusher) {
+                echo "Reading json"
+
+                repositoryBranch   = ref.replaceAll("refs/heads/","")
+                processRepository  = readJSON text: repository
+                processPusher      = readJSON text: pusher
+                repositoryName     = processRepository.clone_url.replaceAll("https://","");
+                repositoryUser     = processPusher.name
+                getBuildUser       = repositoryUser
+
+                echo "User: ${repositoryUser}";
+                echo "Email: ${processRepository.owner.email}";
+                echo "Branch: ${repositoryBranch}";
+                echo "Repository: ${repositoryName}";
+            }
+        }
     }
-    echo "PREPARE WEBHOOK PUSHER";
-    echo "PREPARE WEBHOOK END";
-  }
-
-
-
-
-  stage('Load Webhook Data') {
-    script {
-      echo "LOAD WEBHOOK DATA SCRIP START";
-      echo "LOAD WEBHOOK REF ${env.ref}";
-      echo "LOAD WEBHOOK REPOSITORY ${env.repository}";
-      echo "LOAD WEBHOOK PUSHER ${env.pusher}";
-
-      if (env.ref && env.repository && env.pusher) {
-        echo "READING JSON"
-        repositoryBranchApp = ref.replaceAll("refs/heads/", "")
-        processRepository = readJSON text: repository
-        processPusher = readJSON text: pusher
-        repositoryName = processRepository.clone_url.replaceAll("https://", "");
-        repositoryUser = processPusher.name
-        getBuildUser = repositoryUser
-        echo "BUILD: ${getBuildUser}";
-        echo "JSON: ${processRepository}";
-        echo "PUSHER: ${processPusher}";
-        echo "USER: ${repositoryUser}";
-        echo "EMAIL: ${processRepository.owner.email}";
-        echo "BRANCH: ${repositoryBranchApp}";
-        echo "REPOSITORY: ${repositoryName}";
-      } else {
-        echo "LOAD WEBHOOK DATA SCRIP ELSE";
-      }
-
-      echo "LOAD WEBHOOK DATA SCRIP END";
-    }
-  }
 }
+
 pipeline {
 
   agent any
