@@ -108,7 +108,6 @@ pipeline {
             echo "ERROR USER THAT TRIGGERED THE EVENT DOES NOT HAVE CREDENTIALS IN JENKINS."
           }
         }
-        echo "BUILD NUMBER: ${buildNumber}"
       }
     }
   }
