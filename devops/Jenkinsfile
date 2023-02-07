@@ -18,7 +18,7 @@ node {
           [key: 'commit', value: '$.after'],
         ],
         causeString: '[$committer_name] pushed from branch [$ref] referencing [$commit]',
-        token: 'bacsystem',
+        token: 'microservice-militar',
         printContributedVariables: true,
         printPostContent: true
       ]
@@ -95,7 +95,7 @@ pipeline {
     nameProject = ''
     buildNumber = ''
     publishPath = ''
-    ENV_GITHUB_CREDENTIALS = credentials('github-id')
+    ENV_GITHUB_CREDENTIALS = credentials('github-repository-server-id')
     ENV_NEXUS_CREDENTIALS = credentials('nexus-id')
 
   }
