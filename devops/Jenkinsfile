@@ -5,6 +5,8 @@ def processRepository = ''
 def processPusher = ''
 def repositoryUser = ''
 
+
+
 node {
     properties([
         pipelineTriggers([
