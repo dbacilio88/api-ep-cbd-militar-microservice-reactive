@@ -96,7 +96,7 @@ pipeline {
     buildNumber = ''
     publishPath = ''
     ENV_GITHUB_CREDENTIALS = credentials('github-repository-server-id')
-    ENV_NEXUS_CREDENTIALS = credentials('nexus-id')
+    ENV_NEXUS_CREDENTIALS = credentials('nexus-repository-server-id')
 
   }
 
