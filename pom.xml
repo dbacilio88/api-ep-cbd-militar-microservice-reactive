@@ -14,7 +14,7 @@
 
     <groupId>ep.mil.microservices</groupId>
     <artifactId>api-ep-cbd-militar-microservice-reactive</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>api-ep-cbd-militar-microservice-reactive</name>
 
     <description>spring boot microservice reactive militar</description>
@@ -304,9 +304,9 @@
                         <configuration>
                             <skip>${plugin-org.owasp.skip}</skip>
                         </configuration>
-                        <!--<goals>
+                        <goals>
                             <goal>check</goal>
-                        </goals>-->
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
@@ -350,8 +350,8 @@
             <url>http://localhost:8081/repository/maven-releases/</url>
         </repository>
         <snapshotRepository>
-            <id>bacsystem-central-snapshot</id>
-            <name>bacsystem-central-snapshot</name>
+            <id>maven-snapshots</id>
+            <name>maven-snapshots</name>
             <url>http://localhost:8081/repository/maven-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
@@ -361,6 +361,11 @@
             <id>bacsystem-central</id>
             <name>bacsystem-central</name>
             <url>http://localhost:8081/repository/maven-public/</url>
+        </repository>
+        <repository>
+            <id>maven-snapshots</id>
+            <name>maven-snapshots</name>
+            <url>http://localhost:8081/repository/maven-snapshots/</url>
         </repository>
     </repositories>
 
