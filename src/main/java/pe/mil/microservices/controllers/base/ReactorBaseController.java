@@ -14,38 +14,42 @@ import reactor.core.publisher.Mono;
 import java.util.Objects;
 import java.util.UUID;
 
+import static pe.mil.microservices.utils.constants.LoggerConstants.*;
+
 @Log4j2
 public class ReactorBaseController {
     private final BusinessResponse businessResponse;
     private final String militarControllerId;
-
     private final Gson gson;
 
     public ReactorBaseController(final String controllerName, final BusinessResponse businessResponse) {
         this.gson = new Gson();
         this.businessResponse = businessResponse;
         this.militarControllerId = UUID.randomUUID().toString();
-        log.debug("services name {}, militarControllerId {}", controllerName, militarControllerId);
-        log.debug("{} loaded successfully", controllerName);
+        log.debug(MICROSERVICE_CONTROLLER_NAME_FORMAT, controllerName, militarControllerId);
+        log.debug(LOAD_MICROSERVICE_SUCCESSFULLY_FORMAT, controllerName);
     }
 
     public String getMilitarControllerId() {
         return this.militarControllerId;
     }
 
-
     public Mono<ResponseEntity<Object>> getResponseEntity(BusinessProcessResponse businessProcessResponse) {
         return Mono.just(businessProcessResponse)
             .flatMap(process -> {
 
                 if (process.isErrorProcessResponse() && Objects.isNull(process.getBusinessResponse()) || process.isEmptySuccessfullyResponse()) {
-                    log.info(BaseInterceptorConstants.RESPONSE_MESSAGE, gson.toJson(businessResponse.getResponse(businessProcessResponse.getResponseCode().getResponseCodeValue())));
-                    return Mono.just(this.businessResponse.getResponse(businessProcessResponse.getResponseCode().getResponseCodeValue()));
+                    log.info(BaseInterceptorConstants.RESPONSE_MESSAGE, gson.toJson(businessResponse
+                        .getResponse(businessProcessResponse.getResponseCode().getResponseCodeValue())));
+                    return Mono.just(this.businessResponse.getResponse(businessProcessResponse
+                        .getResponseCode().getResponseCodeValue()));
                 }
 
-                log.info(BaseInterceptorConstants.RESPONSE_MESSAGE, gson.toJson(businessResponse.getResponse(businessProcessResponse.getResponseCode().getResponseCodeValue())));
+                log.info(BaseInterceptorConstants.RESPONSE_MESSAGE, gson.toJson(businessResponse
+                    .getResponse(businessProcessResponse.getResponseCode().getResponseCodeValue())));
 
-                return Mono.just(this.businessResponse.getResponse(businessProcessResponse.getBusinessResponse(), businessProcessResponse.getResponseCode().getResponseCodeValue()));
+                return Mono.just(this.businessResponse
+                    .getResponse(businessProcessResponse.getBusinessResponse(), businessProcessResponse.getResponseCode().getResponseCodeValue()));
             })
             .onErrorResume(throwable -> Mono.just(this.businessResponse.getResponse(ResponseCode.INTERNAL_SERVER_ERROR.getResponseCodeValue()))
             );
@@ -54,19 +58,20 @@ public class ReactorBaseController {
     public Mono<ResponseEntity<Object>> getResponseEntity(Mono<BusinessProcessResponse> businessResponseProcess, String method) {
         return businessResponseProcess
             .flatMap(process -> {
-                log.info("process {} ", process.getResponseCode().getResponseCodeValue());
                 if (process.isErrorProcessResponse() && Objects.isNull(process.getBusinessResponse()) || process.isEmptySuccessfullyResponse()) {
-                    log.info(BaseInterceptorConstants.RESPONSE_MESSAGE, gson.toJson(businessResponse.getResponse(process.getResponseCode().getResponseCodeValue())));
+                    log.info(BaseInterceptorConstants.RESPONSE_MESSAGE, gson.toJson(businessResponse
+                        .getResponse(process.getResponseCode().getResponseCodeValue())));
                     return Mono.just(businessResponse.getResponse(process.getResponseCode().getResponseCodeValue()));
                 }
-                log.info(BaseInterceptorConstants.RESPONSE_MESSAGE, gson.toJson(businessResponse.getResponse(process.getResponseCode().getResponseCodeValue())));
-                return Mono.just(businessResponse.getResponse(process.getBusinessResponse(), process.getResponseCode().getResponseCodeValue()));
+                log.info(BaseInterceptorConstants.RESPONSE_MESSAGE, gson.toJson(businessResponse
+                    .getResponse(process.getResponseCode().getResponseCodeValue())));
+                return Mono.just(businessResponse
+                    .getResponse(process.getBusinessResponse(), process.getResponseCode().getResponseCodeValue()));
             })
-            .doOnSuccess(success -> log.info("finish process {} ", method))
+            .doOnSuccess(success -> log.info(MICROSERVICE_FINISH_FORMAT, method))
             .onErrorResume(WebExchangeBindException.class, Mono::error)
             .onErrorResume(CommonBusinessProcessException.class, e -> Mono.just(businessResponse.getResponse(e.getResponseCode().getResponseCodeValue())))
-            .doOnError(throwable -> log.error("exception error in process {}, error: {}", method, throwable.getMessage()));
-        //.onErrorResume(throwable -> Mono.just(this.businessResponse.getResponse(ResponseCode.INTERNAL_SERVER_ERROR.getResponseCodeValue())));
+            .doOnError(throwable -> log.error(MICROSERVICE_CONTROLLER_EXCEPTION_PROCESS_FORMAT, throwable.getMessage()));
     }
 
     public Mono<ResponseEntity<Object>> getInternalServerError() {

@@ -1,0 +1,119 @@
+def repositoryName = 'https://github.com/dbacilio88/api-ep-cbd-militar-microservice-reactive.git'
+def getBuildUser = ''
+def repositoryBranchApp = ''
+def processRepository = ''
+def processPusher = ''
+def repositoryUser = ''
+
+
+
+
+node {
+    properties([
+        pipelineTriggers([
+            [$class: 'GenericTrigger',
+                genericVariables: [
+                    [ key: 'ref', value: '$.ref' ],
+                    [ key: 'repository', value: '$.repository' ],
+                    [ key: 'pusher', value: '$.pusher' ],
+                    [ key: 'committer_name', value: '$.pusher.name' ],
+                    [ key: 'commit', value: '$.after' ]
+                ],
+                token: 'microservice-militar',
+                causeString: '[$committer_name] pushed from branch [$ref] referencing [$commit]',
+                printContributedVariables: true,
+                printPostContent: true,
+                silentResponse: false
+
+            ]
+        ])
+    ])
+    wrap([$class: 'BuildUser']) {
+        getBuildUser = env.BUILD_USER_ID
+    }
+
+    stage("Prepare Webhook") {
+        deleteDir()
+        if(env.ref) {
+            echo "Ref: $ref"
+        }
+        if(env.repository) {
+            echo "Repository: $repository"
+       }
+       if(env.pusher) {
+            echo "Pusher: $pusher"
+       }
+    }
+
+    stage('Load Webhook Data') {
+        script {
+            if(env.ref && env.repository && env.pusher) {
+                echo "Reading json"
+
+                repositoryBranch   = ref.replaceAll("refs/heads/","")
+                processRepository  = readJSON text: repository
+                processPusher      = readJSON text: pusher
+                repositoryName     = processRepository.clone_url.replaceAll("https://","");
+                repositoryUser     = processPusher.name
+                getBuildUser       = repositoryUser
+
+                echo "User: ${repositoryUser}";
+                echo "Email: ${processRepository.owner.email}";
+                echo "Branch: ${repositoryBranch}";
+                echo "Repository: ${repositoryName}";
+            }
+        }
+    }
+}
+
+pipeline {
+
+  agent any
+
+  tools {
+    maven '3.6.3'
+    jdk '11.0.16'
+  }
+
+  environment {
+    versionProject = ''
+    nameProject = ''
+    buildNumber = ''
+    publishPath = ''
+    ENV_GITHUB_CREDENTIALS = credentials('github-repository-server-id')
+    ENV_NEXUS_CREDENTIALS = credentials('nexus-repository-server-id')
+
+  }
+
+  stages {
+
+    stage("Initialize") {
+      steps {
+        echo "JAVA_HOME=${tool '11.0.16'}"
+        echo "PATH=${PATH}"
+        echo "M2=${M2}"
+        echo "MAVEN_HOME=${M2}"
+        echo "GITHUB: ${ENV_GITHUB_CREDENTIALS_USR}";
+        echo "NEXUS: ${ENV_NEXUS_CREDENTIALS_USR}";
+      }
+    }
+
+    stage('Get checksum git') {
+      steps {
+        deleteDir()
+        echo "REPOSITORY BRANCH: ${repositoryBranchApp}"
+        echo "REPOSITORY NAME: ${repositoryName}"
+        echo "CREDENTIAL OF: ${repositoryUser}"
+        echo "CREDENTIAL OF: ${getBuildUser}"
+        script {
+          try {
+            git branch: "${repositoryBranchApp}", url: "${repositoryName}", credentialsId: "${getBuildUser}"
+          } catch (err) {
+            echo err.getMessage()
+            echo "ERROR USER THAT TRIGGERED THE EVENT DOES NOT HAVE CREDENTIALS IN JENKINS."
+          }
+        }
+      }
+    }
+  }
+}

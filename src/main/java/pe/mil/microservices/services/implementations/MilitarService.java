@@ -29,21 +29,25 @@ import reactor.core.publisher.Mono;
 
 import java.util.*;
 
+import static pe.mil.microservices.constants.ProcessConstants.*;
+import static pe.mil.microservices.utils.constants.LoggerConstants.*;
+
 @Log4j2
 @Service
 public class MilitarService extends BaseReactorService implements IMilitarServices {
 
     private final IMilitarRepository militarRepository;
 
-    private MilitarService(final IMilitarRepository militarRepository) {
-        super("MilitarService");
+    private MilitarService(
+        final IMilitarRepository militarRepository) {
+        super(MilitarService.log.getName());
         this.militarRepository = militarRepository;
     }
 
     @Override
     public Mono<BusinessProcessResponse> getById(String id) {
-        log.info("this is in services getById method");
-        log.debug("militarServiceId {}", this.getMilitarServiceId());
+        log.info(MICROSERVICE_THIS_SERVICES_METHOD_FORMAT, FIND_BY_ID_METHOD_NAME);
+        log.debug(MICROSERVICE_SERVICE_ID_FORMAT, this.getMilitarServiceId());
         GenericBusinessResponse<Militar> genericMessagesBusinessResponse = new GenericBusinessResponse<>();
 
         return Mono
@@ -58,14 +62,14 @@ public class MilitarService extends BaseReactorService implements IMilitarServic
             })
             .flatMap(entity -> Mono.just(searchMilitar(entity)))
             .flatMap(response -> Mono.just(BusinessProcessResponse.setEntitySuccessfullyResponse(response)))
-            .doOnSuccess(success -> log.info("finish process services getById, success: {}", success))
-            .doOnError(throwable -> log.error("exception error in process services getById, error: {}", throwable.getMessage()));
+            .doOnSuccess(success -> log.info(MICROSERVICE_FINISH_PROCESS_SERVICE_FORMAT, FIND_BY_ID_METHOD_NAME, success))
+            .doOnError(throwable -> log.error(MICROSERVICE_PROCESS_ERROR_SERVICE_FORMAT, FIND_BY_ID_METHOD_NAME, throwable.getMessage()));
     }
 
     @Override
     public Mono<BusinessProcessResponse> getAll() {
-        log.info("this is in services getAll method");
-        log.debug("militarServiceId {}", this.getMilitarServiceId());
+        log.info(MICROSERVICE_THIS_SERVICES_METHOD_FORMAT, FIND_ALL_METHOD_NAME);
+        log.debug(MICROSERVICE_SERVICE_ID_FORMAT, this.getMilitarServiceId());
         GenericBusinessResponse<List<Militar>> genericMessagesBusinessResponse = new GenericBusinessResponse<>();
         return Mono.just(genericMessagesBusinessResponse)
             .flatMap(generic -> {
@@ -74,8 +78,8 @@ public class MilitarService extends BaseReactorService implements IMilitarServic
             })
             .flatMap(response -> Mono.just(BusinessProcessResponse.setEntitySuccessfullyResponse(response)))
             .flatMap(process -> Mono.just(BusinessProcessResponse.setEntitySuccessfullyResponse(process.getBusinessResponse())))
-            .doOnSuccess(success -> log.info("finish process services getById, success: {}", success.toString()))
-            .doOnError(throwable -> log.error("exception error in process services getById, error: {}", throwable.getMessage()));
+            .doOnSuccess(success -> log.info(MICROSERVICE_FINISH_PROCESS_SERVICE_FORMAT, FIND_ALL_METHOD_NAME, success.toString()))
+            .doOnError(throwable -> log.error(MICROSERVICE_PROCESS_ERROR_SERVICE_FORMAT, FIND_ALL_METHOD_NAME, throwable.getMessage()));
     }
 
     @Override
@@ -85,12 +89,12 @@ public class MilitarService extends BaseReactorService implements IMilitarServic
 
     @Override
     public Mono<BusinessProcessResponse> save(Mono<RegisterMilitarRequest> entity) {
-        log.info("this is in services save method");
-        log.debug("militarServiceId {}", this.getMilitarServiceId());
+        log.info(MICROSERVICE_THIS_SERVICES_METHOD_FORMAT, SAVE_METHOD_NAME);
+        log.debug(MICROSERVICE_SERVICE_ID_FORMAT, this.getMilitarServiceId());
         return entity
             .flatMap(create -> {
                 final MilitarValidationResult result = validationRequest(create);
-                log.info("result {} ", result);
+
                 if (!MilitarValidationResult.MILITAR_VALID.equals(result)) {
                     return Mono.error(() -> new CommonBusinessProcessException(ResponseCode.ERROR_IN_REQUESTED_DATA));
                 }
@@ -99,7 +103,7 @@ public class MilitarService extends BaseReactorService implements IMilitarServic
             .flatMap(request -> {
                 boolean exists = this.militarRepository.existsByMilitarIdAndPerson(request.getMilitarId(), request.getPerson().getPersonId());
                 if (Boolean.TRUE.equals(exists)) {
-                    log.info("exists {} ", true);
+
                     return Mono.error(() -> new CommonBusinessProcessException(
                         ResponseCode.ERROR_IN_REQUESTED_DATA_EXISTS.getResponseCodeValue(), ResponseCode.ERROR_IN_REQUESTED_DATA_EXISTS)
                     );
@@ -111,14 +115,14 @@ public class MilitarService extends BaseReactorService implements IMilitarServic
                 return Mono.just(saved);
             })
             .flatMap(response -> Mono.just(militarResponse(response)))
-            .doOnSuccess(success -> log.info("finish process services save, success: {}", success.toString()))
-            .doOnError(throwable -> log.error("exception error in process services save, error: {}", throwable.getMessage()));
+            .doOnSuccess(success -> log.info(MICROSERVICE_FINISH_PROCESS_SERVICE_FORMAT, SAVE_METHOD_NAME, success.toString()))
+            .doOnError(throwable -> log.error(MICROSERVICE_PROCESS_ERROR_SERVICE_FORMAT, SAVE_METHOD_NAME, throwable.getMessage()));
     }
 
     @Override
     public Boolean delete(Militar entity) {
-        log.debug("this is in services delete method");
-        log.debug("militarServiceId {}", this.getMilitarServiceId());
+        log.debug(MICROSERVICE_THIS_SERVICES_METHOD_FORMAT, DELETE_METHOD_NAME);
+        log.debug(MICROSERVICE_SERVICE_ID_FORMAT, this.getMilitarServiceId());
         final Optional<MilitarEntity> result = this.militarRepository.findById(entity.getMilitarId());
         if (result.isEmpty()) {
             return false;
@@ -177,14 +181,14 @@ public class MilitarService extends BaseReactorService implements IMilitarServic
                 return Mono.just(BusinessProcessResponse
                     .setEntitySuccessfullyResponse(response));
             })
-            .doOnSuccess(success -> log.info("finish process services page, success: {}", success))
-            .doOnError(throwable -> log.error("exception error in process services page, error: {}", throwable.getMessage()));
+            .doOnSuccess(success -> log.info(MICROSERVICE_FINISH_PROCESS_SERVICE_FORMAT, PAGE_METHOD_NAME, success))
+            .doOnError(throwable -> log.error(MICROSERVICE_PROCESS_ERROR_SERVICE_FORMAT, PAGE_METHOD_NAME, throwable.getMessage()));
     }
 
     @Override
     public Mono<BusinessProcessResponse> update(Mono<RegisterMilitarRequest> entity) {
-        log.info("this is in services update method");
-        log.debug("militarServiceId {}", this.getMilitarServiceId());
+        log.info(MICROSERVICE_THIS_SERVICES_METHOD_FORMAT, UPDATE_METHOD_NAME);
+        log.debug(MICROSERVICE_SERVICE_ID_FORMAT, this.getMilitarServiceId());
         return entity.
             flatMap(request -> {
                 final MilitarValidationResult result = validationRequest(request);
@@ -201,14 +205,14 @@ public class MilitarService extends BaseReactorService implements IMilitarServic
                 return Mono.just(updated);
             })
             .flatMap(response -> Mono.just(militarResponse(response)))
-            .doOnSuccess(success -> log.info("finish process services save, success: {}", success))
-            .doOnError(throwable -> log.error("exception error in process services save, error: {}", throwable.getMessage()));
+            .doOnSuccess(success -> log.info(MICROSERVICE_FINISH_PROCESS_SERVICE_FORMAT, UPDATE_METHOD_NAME, success))
+            .doOnError(throwable -> log.error(MICROSERVICE_PROCESS_ERROR_SERVICE_FORMAT, UPDATE_METHOD_NAME, throwable.getMessage()));
     }
 
     @Override
     public Mono<BusinessProcessResponse> getByDni(String dni) {
-        log.info("this is in services getByDni method");
-        log.debug("militarServiceId {}", this.getMilitarServiceId());
+        log.info(MICROSERVICE_THIS_SERVICES_METHOD_FORMAT, FIND_BY_DNI_METHOD_NAME);
+        log.debug(MICROSERVICE_SERVICE_ID_FORMAT, this.getMilitarServiceId());
         GenericBusinessResponse<Militar> genericMessagesBusinessResponse = new GenericBusinessResponse<>();
         return Mono.just(genericMessagesBusinessResponse)
             .flatMap(generic -> {
@@ -221,36 +225,31 @@ public class MilitarService extends BaseReactorService implements IMilitarServic
             })
             .flatMap(entity -> Mono.just(searchMilitar(entity)))
             .flatMap(response -> Mono.just(BusinessProcessResponse.setEntitySuccessfullyResponse(response)))
-            .doOnSuccess(success -> log.info("finish process services getByDni, success: {}", success))
-            .doOnError(throwable -> log.error("exception error in process services getByDni, error: {}", throwable.getMessage()));
+            .doOnSuccess(success -> log.info(MICROSERVICE_FINISH_PROCESS_SERVICE_FORMAT, FIND_BY_DNI_METHOD_NAME, success))
+            .doOnError(throwable -> log.error(MICROSERVICE_PROCESS_ERROR_SERVICE_FORMAT, FIND_BY_DNI_METHOD_NAME, throwable.getMessage()));
     }
 
 
     private GenericBusinessResponse<Militar> searchMilitar(MilitarEntity entity) {
         final Militar target = ObjectMapperHelper.map(entity, Militar.class);
-        GenericBusinessResponse<Militar> data = new GenericBusinessResponse<>(target);
-        return data;
+        return new GenericBusinessResponse<>(target);
     }
 
     private MilitarEntity saveMilitar(RegisterMilitarRequest request) {
-        log.info("operation save or update militar");
         final MilitarEntity update = IMilitarMapperByMapstruct
             .MILITAR_MAPPER
             .mapMilitarEntityByRegisterMilitarRequest(request);
-        final MilitarEntity updated = this.militarRepository.save(update);
-        return updated;
+        return this.militarRepository.save(update);
     }
 
     private MilitarValidationResult validationRequest(RegisterMilitarRequest request) {
-        final MilitarValidationResult result =
-            IMilitarRegisterValidation
-                .isMilitarIdValidation()
-                .and(IMilitarRegisterValidation.isMilitarPersonValidation())
-                .and(IMilitarRegisterValidation.isMilitarGradeValidation())
-                .and(IMilitarRegisterValidation.isMilitarSpecialtyValidation())
-                .apply(request);
 
-        return result;
+        return IMilitarRegisterValidation
+            .isMilitarIdValidation()
+            .and(IMilitarRegisterValidation.isMilitarPersonValidation())
+            .and(IMilitarRegisterValidation.isMilitarGradeValidation())
+            .and(IMilitarRegisterValidation.isMilitarSpecialtyValidation())
+            .apply(request);
     }
 
     private BusinessProcessResponse militarResponse(MilitarEntity entity) {

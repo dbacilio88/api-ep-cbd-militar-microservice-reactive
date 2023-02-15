@@ -14,12 +14,13 @@
 
     <groupId>ep.mil.microservices</groupId>
     <artifactId>api-ep-cbd-militar-microservice-reactive</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>api-ep-cbd-militar-microservice-reactive</name>
 
     <description>spring boot microservice reactive militar</description>
 
     <properties>
+        <spring-cloud.version>2021.0.5</spring-cloud.version>
         <java.version>11</java.version>
         <maven.test.skip>false</maven.test.skip>
         <project.test.result.directory>${project.build.directory}/test-results</project.test.result.directory>
@@ -53,10 +54,6 @@
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-starter-web</artifactId>
                 </exclusion>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-logging</artifactId>
-                </exclusion>
             </exclusions>
         </dependency>
 
@@ -80,6 +77,28 @@
                     <artifactId>spring-boot-starter-aop</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-sleuth-zipkin</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-sleuth -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-sleuth</artifactId>
+            <version>3.1.6</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-loadbalancer</artifactId>
         </dependency>
 
         <dependency>
@@ -142,7 +161,20 @@
             <artifactId>log4j-core</artifactId>
             <version>${dependency-org.apache.logging.log4j-version}</version>
         </dependency>
+
     </dependencies>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>
@@ -304,9 +336,9 @@
                         <configuration>
                             <skip>${plugin-org.owasp.skip}</skip>
                         </configuration>
-                        <!--<goals>
+                        <goals>
                             <goal>check</goal>
-                        </goals>-->
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
@@ -343,26 +375,31 @@
         </profile>
     </profiles>
 
-    <distributionManagement>
-        <repository>
-            <id>bacsystem-central</id>
-            <name>bacsystem-central</name>
-            <url>http://192.168.1.14:8081/repository/maven-releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>bacsystem-central-snapshot</id>
-            <name>bacsystem-central-snapshot</name>
-            <url>http://192.168.1.14:8081/repository/maven-snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
+    <!--    <distributionManagement>
+            <repository>
+                <id>bacsystem-central</id>
+                <name>bacsystem-central</name>
+                <url>http://localhost:8081/repository/maven-releases/</url>
+            </repository>
+            <snapshotRepository>
+                <id>maven-snapshots</id>
+                <name>maven-snapshots</name>
+                <url>http://localhost:8081/repository/maven-snapshots/</url>
+            </snapshotRepository>
+        </distributionManagement>
 
-    <repositories>
-        <repository>
-            <id>bacsystem-central</id>
-            <name>bacsystem-central</name>
-            <url>http://192.168.1.14:8081/repository/maven-public/</url>
-        </repository>
-    </repositories>
+        <repositories>
+            <repository>
+                <id>bacsystem-central</id>
+                <name>bacsystem-central</name>
+                <url>http://localhost:8081/repository/maven-public/</url>
+            </repository>
+            <repository>
+                <id>maven-snapshots</id>
+                <name>maven-snapshots</name>
+                <url>http://localhost:8081/repository/maven-snapshots/</url>
+            </repository>
+        </repositories>-->
 
     <reporting>
         <plugins>

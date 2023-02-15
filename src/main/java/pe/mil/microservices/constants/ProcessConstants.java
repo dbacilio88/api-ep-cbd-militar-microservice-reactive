@@ -17,10 +17,18 @@ public class ProcessConstants {
     public static final String PAGES_MILITAR_PATH = "/pageable";
     public static final String GET_MILITAR_ID_PATH = "/{militarId}";
     public static final String UPDATE_MILITAR_PATH = "";
+    public static final String UPDATE_METHOD_NAME = "update";
+    public static final String SAVE_METHOD_NAME = "save";
+    public static final String PAGE_METHOD_NAME = "page";
+    public static final String FIND_BY_ID_METHOD_NAME = "getById";
+    public static final String FIND_BY_DNI_METHOD_NAME = "getByDni";
+    public static final String FIND_ALL_METHOD_NAME = "findAll";
+    public static final String DELETE_METHOD_NAME = "delete";
 
     public static final String FIND_ALL_MILITAR_LOG_METHOD = "find.militares.method";
     public static final String FIND_BY_ID_MILITAR_LOG_METHOD = "findById.militares.method";
     public static final String SAVE_MILITAR_LOG_METHOD = "save.militares.method";
     public static final String UPDATE_MILITAR_LOG_METHOD = "update.militares.method";
+    public static final String PAGE_MILITAR_LOG_METHOD = "page.militares.method";
     public static final String MAPSTRUCT_COMPONENT_MODEL_CONFIGURATION = "spring";
 }

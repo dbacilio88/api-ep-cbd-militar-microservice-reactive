@@ -1,6 +1,7 @@
 # Embedded Server configuration
 server:
-    port: 8003
+    #port: 8003
+    port: ${PORT:0} #solo para auto scaling
     compression:
         enabled: true
     tomcat:
@@ -12,7 +13,7 @@ spring:
     webflux:
         base-path: /microservices/v1
     application:
-        name: militares
+        name: microservice-militares
         version: 1.0.0
         log: /logs
     messages:
@@ -63,7 +64,28 @@ spring:
         username: postgres
         url: jdbc:postgresql://localhost:5438/postgres
 
+# Configuration Eureka Server
+eureka:
+    client:
+        service-url:
+            defaultZone: http://localhost:8761/eureka
+    instance:
+        instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
 # Logger Configuration
 logging:
     level:
         root: INFO
+
+
+
+
+
+
+
+# Logger Sleuth:
+    sleuth:
+        sampler:
+            probability: 1.0
+# Logger Zipkin:
+    zipkin:
+        base-url: http://localhost:9411/
