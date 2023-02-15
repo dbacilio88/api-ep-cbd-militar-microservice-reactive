@@ -16,11 +16,11 @@ import pe.mil.microservices.dto.requests.RegisterMilitarRequest;
 import pe.mil.microservices.dto.requests.SearchMilitarRequest;
 import pe.mil.microservices.services.contracts.IMilitarServices;
 import pe.mil.microservices.utils.components.exceptions.CommonBusinessProcessException;
-import pe.mil.microservices.utils.constants.LoggerConstants;
 import pe.mil.microservices.utils.dtos.base.BusinessResponse;
 import reactor.core.publisher.Mono;
 
 import static pe.mil.microservices.constants.ProcessConstants.*;
+import static pe.mil.microservices.utils.constants.LoggerConstants.*;
 
 @Log4j2
 @RestController
@@ -29,7 +29,7 @@ public class MilitarController extends ReactorBaseController implements IMilitar
     private final BusinessResponse businessResponse;
 
     public MilitarController(IMilitarServices militarServices, BusinessResponse businessResponse) {
-        super("MilitarController", businessResponse);
+        super(MilitarController.log.getName(), businessResponse);
         this.militarServices = militarServices;
         this.businessResponse = businessResponse;
     }
@@ -37,68 +37,69 @@ public class MilitarController extends ReactorBaseController implements IMilitar
     @Override
     @GetMapping(path = GET_MILITAR_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<Object>> findAll() {
-        log.debug("method findAll initialized successfully");
-        log.debug("militarControllerId {}", this.getMilitarControllerId());
-        ThreadContext.put(LoggerConstants.CONSTANTS_LOG_METHOD, FIND_ALL_MILITAR_LOG_METHOD);
-        return super.getResponseEntity(this.militarServices.getAll(), "findAll")
+        log.debug(LOAD_MICROSERVICE_LOAD_METHOD_FORMAT, FIND_ALL_METHOD_NAME);
+        log.debug(MICROSERVICE_CONTROLLER_ID_FORMAT, this.getMilitarControllerId());
+        ThreadContext.put(CONSTANTS_LOG_METHOD, FIND_ALL_MILITAR_LOG_METHOD);
+        return super.getResponseEntity(this.militarServices.getAll(), FIND_ALL_METHOD_NAME)
             .onErrorResume(WebExchangeBindException.class, Mono::error)
             .onErrorResume(CommonBusinessProcessException.class, e -> Mono.just(businessResponse.getResponse(e.getResponseCode().getResponseCodeValue())))
-            .doOnError(throwable -> log.error("exception error in process findAll, error: {}", throwable.getMessage()));
+            .doOnError(throwable -> log.error(MICROSERVICE_PROCESS_ERROR_SERVICE_FORMAT, FIND_ALL_METHOD_NAME, throwable.getMessage()));
     }
 
     @Override
     @GetMapping(path = GET_MILITAR_ID_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<Object>> getById(String militarId) {
-        log.debug("method getById initialized successfully");
-        log.debug("militarControllerId {}", this.getMilitarControllerId());
-        ThreadContext.put(LoggerConstants.CONSTANTS_LOG_METHOD, FIND_BY_ID_MILITAR_LOG_METHOD);
-        return super.getResponseEntity(this.militarServices.getById(militarId), "getById")
+        log.debug(LOAD_MICROSERVICE_LOAD_METHOD_FORMAT, FIND_BY_ID_METHOD_NAME);
+        log.debug(MICROSERVICE_CONTROLLER_ID_FORMAT, this.getMilitarControllerId());
+        ThreadContext.put(CONSTANTS_LOG_METHOD, FIND_BY_ID_MILITAR_LOG_METHOD);
+        return super.getResponseEntity(this.militarServices.getById(militarId), FIND_BY_ID_METHOD_NAME)
             .onErrorResume(WebExchangeBindException.class, Mono::error)
             .onErrorResume(CommonBusinessProcessException.class, e -> Mono.just(businessResponse.getResponse(e.getResponseCode().getResponseCodeValue())))
-            .doOnError(throwable -> log.error("exception error in process getById, error: {}", throwable.getMessage()));
+            .doOnError(throwable -> log.error(MICROSERVICE_PROCESS_ERROR_SERVICE_FORMAT, FIND_BY_ID_METHOD_NAME, throwable.getMessage()));
     }
 
     @Override
     @PostMapping(value = SEARCH_MILITAR_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<Object>> getByDni(SearchMilitarRequest search) {
-        log.debug("method getByDni initialized successfully");
-        log.debug("militarControllerId {}", this.getMilitarControllerId());
-        ThreadContext.put(LoggerConstants.CONSTANTS_LOG_METHOD, FIND_BY_ID_MILITAR_LOG_METHOD);
-        return super.getResponseEntity(this.militarServices.getByDni(search.getDni()), "getByDni")
+        log.debug(LOAD_MICROSERVICE_LOAD_METHOD_FORMAT, FIND_BY_DNI_METHOD_NAME);
+        log.debug(MICROSERVICE_CONTROLLER_ID_FORMAT, this.getMilitarControllerId());
+        ThreadContext.put(CONSTANTS_LOG_METHOD, FIND_BY_ID_MILITAR_LOG_METHOD);
+        return super.getResponseEntity(this.militarServices.getByDni(search.getDni()), FIND_BY_DNI_METHOD_NAME)
             .onErrorResume(WebExchangeBindException.class, Mono::error)
             .onErrorResume(CommonBusinessProcessException.class, e -> Mono.just(businessResponse.getResponse(e.getResponseCode().getResponseCodeValue())))
-            .doOnError(throwable -> log.error("exception error in process getByDni, error: {}", throwable.getMessage()));
+            .doOnError(throwable -> log.error(MICROSERVICE_PROCESS_ERROR_SERVICE_FORMAT, FIND_BY_DNI_METHOD_NAME, throwable.getMessage()));
     }
 
     @Override
     @PostMapping(value = SAVE_MILITAR_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<Object>> save(Mono<RegisterMilitarRequest> request) {
-        log.debug("method save initialized successfully");
-        log.debug("militarControllerId {}", this.getMilitarControllerId());
-        ThreadContext.put(LoggerConstants.CONSTANTS_LOG_METHOD, SAVE_MILITAR_LOG_METHOD);
-        return super.getResponseEntity(this.militarServices.save(request), "save");
+        log.debug(LOAD_MICROSERVICE_LOAD_METHOD_FORMAT, SAVE_METHOD_NAME);
+        log.debug(MICROSERVICE_CONTROLLER_ID_FORMAT, this.getMilitarControllerId());
+        ThreadContext.put(CONSTANTS_LOG_METHOD, SAVE_MILITAR_LOG_METHOD);
+        return super.getResponseEntity(this.militarServices.save(request), SAVE_METHOD_NAME);
     }
 
     @Override
     @PutMapping(value = UPDATE_MILITAR_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<Object>> update(Mono<RegisterMilitarRequest> request) {
-        log.debug("method update initialized successfully");
-        log.debug("militarControllerId {}", this.getMilitarControllerId());
-        ThreadContext.put(LoggerConstants.CONSTANTS_LOG_METHOD, UPDATE_MILITAR_LOG_METHOD);
-        return super.getResponseEntity(this.militarServices.update(request), "update")
+        log.debug(LOAD_MICROSERVICE_LOAD_METHOD_FORMAT, UPDATE_METHOD_NAME);
+        log.debug(MICROSERVICE_CONTROLLER_ID_FORMAT, this.getMilitarControllerId());
+        ThreadContext.put(CONSTANTS_LOG_METHOD, UPDATE_MILITAR_LOG_METHOD);
+        return super.getResponseEntity(this.militarServices.update(request), UPDATE_METHOD_NAME)
             .onErrorResume(WebExchangeBindException.class, Mono::error)
             .onErrorResume(CommonBusinessProcessException.class, e -> Mono.just(businessResponse.getResponse(e.getResponseCode().getResponseCodeValue())))
-            .doOnError(throwable -> log.error("exception error in process update, error: {}", throwable.getMessage()));
+            .doOnError(throwable -> log.error(MICROSERVICE_PROCESS_ERROR_SERVICE_FORMAT, UPDATE_METHOD_NAME, throwable.getMessage()));
     }
 
     @Override
     @PostMapping(path = PAGES_MILITAR_PATH, produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<Object>> page(Mono<PageMilitarRequest> request) {
-        log.debug("method page initialized successfully");
-        log.debug("militarControllerId {}", this.getMilitarControllerId());
-        return super.getResponseEntity(this.militarServices.getPage(request), "page")
+        log.debug(LOAD_MICROSERVICE_LOAD_METHOD_FORMAT, PAGE_METHOD_NAME);
+        log.debug(MICROSERVICE_CONTROLLER_ID_FORMAT, this.getMilitarControllerId());
+        ThreadContext.put(CONSTANTS_LOG_METHOD, PAGE_MILITAR_LOG_METHOD);
+        return super.getResponseEntity(this.militarServices.getPage(request), PAGE_METHOD_NAME)
             .onErrorResume(WebExchangeBindException.class, Mono::error)
             .onErrorResume(CommonBusinessProcessException.class, e -> Mono.just(businessResponse.getResponse(e.getResponseCode().getResponseCodeValue())))
-            .doOnError(throwable -> log.error("exception error in process page, error: {}", throwable.getMessage()));
+            .doOnError(throwable -> log.error(MICROSERVICE_PROCESS_ERROR_SERVICE_FORMAT, PAGE_METHOD_NAME, throwable.getMessage()));
     }
 }
